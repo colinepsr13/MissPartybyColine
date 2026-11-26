@@ -349,6 +349,36 @@ const PAST_WINNERS = [
   { y: 2000, name: 'Sonia Rolland',             region: 'Bourgogne' },
 ];
 const PLACES = ['', 'Miss France 2027', '1re dauphine', '2e dauphine', '3e dauphine', '4e dauphine'];
+/* Candidates Miss France 2027 trouvées dans la presse (octobre 2026). L'organisatrice peut les modifier. */
+const CANDIDATES_2027 = {
+  'Alsace': ['Chiara Blazevic', '24 ans · Haut-Rhin'],
+  'Aquitaine': ['Solène Videau', '22 ans · Mérignac'],
+  'Auvergne': ['Lina Berthelier', ''],
+  'Bourgogne': ['Ilona Perrot', '23 ans · infirmière en psychiatrie'],
+  'Bretagne': ['Margot Ferré-Bernard', '20 ans · étudiante en droit à Brest'],
+  'Centre-Val de Loire': ['Justine Bourrelier', '26 ans · Dammarie'],
+  'Corse': ['Satine Nomary', '21 ans · hôtesse de l\'air'],
+  "Côte d'Azur": ['May Haoues', '19 ans · Cagnes-sur-Mer'],
+  'Guadeloupe': ['Julia Désirée', ''],
+  'Guyane': ['Sandra Justine', '23 ans · infirmière'],
+  'Île-de-France': ['Camilla Alash', '23 ans · études de journalisme'],
+  'Languedoc': ['Candice Gauch', '29 ans · consultante'],
+  'Limousin': ['Élise Escuriol', ''],
+  'Lorraine': ['Léane Froment', ''],
+  'Martinique': ['Maureen-Alycia Lucéa-Merlin', ''],
+  'Mayotte': ['Emma Saïd Issouf', '24 ans · licence de lettres modernes'],
+  'Nord-Pas-de-Calais': ['Shana Mendes', '18 ans'],
+  'Normandie': ['Pauline Gourlez', ''],
+  'Nouvelle-Calédonie': ['Lana Prost', '18 ans'],
+  'Pays de la Loire': ['Maëlle Hamon', ''],
+  'Poitou-Charentes': ['Mandy Goudal', ''],
+  'Provence': ['Ophélie Vitalbo', ''],
+  'Réunion': ['Laetitia Roguet', ''],
+  'Rhône-Alpes': ['Julia Grid-Constantino', ''],
+  'Roussillon': ['Juliette Gauthier', '22 ans'],
+  'Tahiti': ['Leia Diard', ''],
+};
+const SHOW_DATE = [2026, 11, 12];  // élection Miss France 2027 : samedi 12 décembre 2026
 const DEFAULT_START = [21, 10];   // heure de début habituelle de l'émission (21 h 10)
 const DEFAULT_DURATION = 200;     // durée habituelle : environ 3 h 20
 const EMPTY_VOTES = '0'.repeat(NC * NK);
@@ -742,12 +772,12 @@ class RoomSession {
   }
   startTime() {
     if (this.meta && this.meta.st) return this.meta.st * 1000;
-    const d = new Date(); d.setHours(DEFAULT_START[0], DEFAULT_START[1], 0, 0);
+    const d = new Date(SHOW_DATE[0], SHOW_DATE[1], SHOW_DATE[2], DEFAULT_START[0], DEFAULT_START[1], 0, 0);
     return d.getTime();
   }
   candidate(ci) {
     const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null, pl: {} };
-    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || `miss/${String(n).padStart(2, '0')}.jpg`, place: (m.pl && m.pl[n]) || (m.crown === n ? 1 : 0) };
+    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || (CANDIDATES_2027[REGIONS[ci]] || [''])[0], info: m.names[n] ? '' : (CANDIDATES_2027[REGIONS[ci]] || ['', ''])[1], elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || `miss/${String(n).padStart(2, '0')}.jpg`, place: (m.pl && m.pl[n]) || (m.crown === n ? 1 : 0) };
   }
 }
 
@@ -842,6 +872,7 @@ function renderHome() {
         <button class="btn btn-outline" id="join">Rejoindre avec un code</button>
       </div>
       <button class="btn btn-soft" id="hist">Le palmarès Miss France</button>
+      <a class="btn btn-text" style="text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px" href="https://www.instagram.com/missfranceoff/" target="_blank" rel="noopener">${ICON.insta} Les coulisses · @missfranceoff</a>
       ${hint}
       <div class="section-head"><span class="eyebrow">Mes salons</span><hr class="rule"></div>
       ${rooms || '<p class="center italic muted" style="font-size:17px;margin:4px 0">Aucun salon pour le moment.</p>'}
@@ -1640,6 +1671,8 @@ function renderRatingBody() {
       <span class="num ${c.crown ? 'crowned' : ''}" ${c.photo ? 'style="display:none"' : ''}>${c.n}</span>
       <h2>${esc(c.title)}</h2>
       ${c.name ? `<div class="muted" style="margin-top:2px">${esc(c.name)}</div>` : ''}
+      ${c.info ? `<div class="small muted">${esc(c.info)}</div>` : ''}
+      ${c.name ? `<a class="link-btn" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;text-decoration:none" href="https://www.google.com/search?q=${encodeURIComponent(c.name + ' ' + c.title + ' 2026 instagram')}" target="_blank" rel="noopener">${ICON.insta} Son Instagram</a>` : ''}
       ${c.place ? `<div class="tag" style="margin-top:6px">${c.place === 1 ? ICON.crown + ' ' : ''}${PLACES[c.place]}</div>` : ''}
       ${c.elim ? '<div class="tag" style="margin-top:6px">Éliminée</div>' : ''}
       ${regionHistory(REGIONS[ci]) ? `<div class="small italic" style="margin-top:8px;color:var(--taupe);font-size:15px">${esc(regionHistory(REGIONS[ci]))}</div>` : ''}
