@@ -23,6 +23,7 @@
   --blush: #C38380;     /* Rosy Blush */
   --taupe: #9C7164;     /* Rose Taupe */
   --umber: #4B342C;     /* Deep Umber */
+  --red: #C8413B;       /* pastille de notification */
 
   --bg: #E5DECE;        /* fond du logo, pour qu'il se fonde dans la page */
   --surface: #EFEAE0;
@@ -107,12 +108,31 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 @keyframes pulse { 50% { opacity: .3; } }
 .phase { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 0 16px 12px; border-bottom: 1px solid var(--line); }
 .phase .sep { width: 18px; height: 1px; background: var(--peach); }
+.timeline { padding: 10px 18px 12px; border-bottom: 1px solid var(--line); }
+.tl-bar { position: relative; height: 2px; background: var(--line-strong); border-radius: 1px; }
+.tl-bar > i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--blush); border-radius: 1px; transition: width 1s linear; }
+.tl-bar > b { position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--blush); box-shadow: 0 0 0 3px rgba(195,131,128,.25); }
+.timeline.tl-live .tl-bar > b { animation: pulse 2s infinite; }
+.tl-labels { display: flex; justify-content: space-between; align-items: baseline; margin-top: 7px; font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
+.tl-labels .now { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--umber); letter-spacing: 0; }
+.photo { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: none; border: 1px solid var(--peach); background: var(--surface-2); }
+.cand.elim .photo { opacity: .4; filter: grayscale(.6); }
+.cand.crowned .photo { border: 2px solid var(--umber); }
+.rank .photo { width: 36px; height: 36px; }
+.sheet-photo { display: block; width: 132px; height: 176px; object-fit: cover; border-radius: 70px 70px 14px 14px; margin: 2px auto 12px; border: 1px solid var(--peach); }
 .phase .sync { font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
 .main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 16px 24px; }
 .tabbar { display: flex; border-top: 1px solid var(--line); background: var(--bg); padding-bottom: var(--safe-bottom); }
 .tabbar button { flex: 1; padding: 10px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); position: relative; }
 .tabbar button.active { color: var(--umber); }
-.tabbar .badge { position: absolute; top: 7px; left: calc(50% + 8px); width: 7px; height: 7px; border-radius: 50%; background: var(--blush); }
+.tabbar .badge { position: absolute; top: 3px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 400; letter-spacing: 0; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px var(--bg); animation: pop .25s ease-out; }
+@keyframes pop { from { transform: scale(.4); } }
+.msg-banner { position: fixed; left: 12px; right: 12px; top: calc(var(--safe-top) + 10px); max-width: 560px; margin: 0 auto; z-index: 30; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--surface-2); border: 1px solid var(--line); box-shadow: 0 10px 30px rgba(75,52,44,.18); text-align: left; animation: drop .25s ease-out; }
+@keyframes drop { from { transform: translateY(-20px); opacity: 0; } }
+.msg-banner .rdot { width: 9px; height: 9px; border-radius: 50%; background: var(--red); flex: none; }
+.msg-banner .grow { flex: 1; min-width: 0; }
+.msg-banner .who { font-size: 10px; letter-spacing: .16em; text-transform: uppercase; color: var(--taupe); }
+.msg-banner .txt { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .stack { display: flex; flex-direction: column; gap: 10px; }
 
 .progress { height: 2px; background: var(--line); overflow: hidden; }
@@ -263,6 +283,8 @@ const REGIONS = [
 ];
 const REACTIONS = ['😍', '👑', '🔥', '😱', '👏', '😂', '💅', '😭', '🤩', '👀'];
 const NC = REGIONS.length, NK = CRITERIA.length;
+const DEFAULT_START = [21, 10];   // heure de début habituelle de l'émission (21 h 10)
+const DEFAULT_DURATION = 200;     // durée habituelle : environ 3 h 20
 const EMPTY_VOTES = '0'.repeat(NC * NK);
 
 /* ================== Utilitaires ================== */
@@ -332,6 +354,10 @@ class RoomSession {
     this.pendingMeta = false;
     this.pendingUser = false;
     this.chatQueue = [];
+    this.photos = {};          // n° candidate -> image (data URL)
+    this.photoParts = {};      // morceaux de photo en cours de réception
+    this.photoQueue = [];      // morceaux à envoyer (organisatrice)
+    this.localPhotos = store.get('mp_photos_' + code, {});
     this.timer = null;
     this.flushing = false;
     this.syncError = false;
@@ -385,6 +411,8 @@ class RoomSession {
         names,
         elim: Array.isArray(d.e) ? d.e.filter(n => Number.isInteger(n) && n >= 1 && n <= NC) : [],
         crown: Number.isInteger(d.w) && d.w >= 1 && d.w <= NC ? d.w : null,
+        st: Number.isFinite(d.st) && d.st > 0 ? d.st : null,
+        du: Number.isInteger(d.du) && d.du >= 30 && d.du <= 480 ? d.du : DEFAULT_DURATION,
       };
       return true;
     }
@@ -398,6 +426,22 @@ class RoomSession {
       const cur = this.users[d.u];
       if (cur && s < cur.s) return true;
       this.users[d.u] = { n: clampStr(d.n, 30) || 'Copine', v: normVotes(d.v), s, t };
+      return true;
+    }
+    if (d.k === 'ph') {
+      if (!this.meta || d.u !== this.meta.h) return false;    // photos : organisatrice uniquement
+      const n = d.n;
+      if (!Number.isInteger(n) || n < 1 || n > NC || typeof d.id !== 'string') return false;
+      if (d.c === 0) { delete this.photos[n]; return true; }
+      if (!Number.isInteger(d.c) || d.c < 1 || d.c > 12 || !Number.isInteger(d.i) || typeof d.d !== 'string') return false;
+      const key = n + ':' + d.id;
+      const part = this.photoParts[key] || (this.photoParts[key] = { n, c: d.c, parts: [] });
+      part.parts[d.i] = d.d;
+      if (part.parts.filter(x => typeof x === 'string').length === part.c) {
+        const data = part.parts.join('');
+        if (/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(data)) this.photos[n] = data;
+        delete this.photoParts[key];
+      }
       return true;
     }
     if (d.k === 'chat') {
@@ -466,7 +510,7 @@ class RoomSession {
   }
   metaPayload() {
     const m = this.meta;
-    return { k: 'room', u: uid, s: m.s, n: m.name, p: m.phase, c: m.names, e: m.elim, w: m.crown };
+    return { k: 'room', u: uid, s: m.s, n: m.name, p: m.phase, c: m.names, e: m.elim, w: m.crown, st: m.st, du: m.du };
   }
   userPayload() {
     return { k: 'user', u: uid, s: this.local.seq, n: pseudo, v: this.local.votes };
@@ -475,7 +519,7 @@ class RoomSession {
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.flush(), delay);
   }
-  get hasPending() { return this.pendingMeta || this.pendingUser || this.chatQueue.length > 0; }
+  get hasPending() { return this.pendingMeta || this.pendingUser || this.chatQueue.length > 0 || this.photoQueue.length > 0; }
 
   async flush() {
     clearTimeout(this.timer);
@@ -495,6 +539,10 @@ class RoomSession {
         const m = this.chatQueue[0];
         if (!m.sent) { await this.post({ k: 'chat', u: uid, n: pseudo, x: m.x, cid: m.cid }); m.sent = true; }
         if (this.chatQueue[0] === m) this.chatQueue.shift();
+      }
+      while (this.photoQueue.length && this.isHost) {
+        await this.post(this.photoQueue[0]);
+        this.photoQueue.shift();
       }
       this.syncError = false;
     } catch {
@@ -572,9 +620,41 @@ class RoomSession {
     for (let ci = 0; ci < NC; ci++) if (CRITERIA.some((_, k) => this.score(u, ci, k))) c++;
     return c;
   }
+  setPhoto(n, dataUrl) {
+    if (!this.isHost) return;
+    const id = randFrom('abcdefghijklmnopqrstuvwxyz0123456789', 6);
+    this.photoQueue = this.photoQueue.filter(m => m.n !== n);
+    if (dataUrl) {
+      this.photos[n] = dataUrl;
+      this.localPhotos[n] = dataUrl;
+      this.queuePhoto(n, dataUrl, id);
+    } else {
+      delete this.photos[n];
+      delete this.localPhotos[n];
+      this.photoQueue.push({ k: 'ph', u: uid, n, id, c: 0 });
+    }
+    store.set('mp_photos_' + this.code, this.localPhotos);
+    this.onchange();
+    this.flush();
+  }
+  queuePhoto(n, dataUrl, id) {
+    const size = 3500, c = Math.ceil(dataUrl.length / size);
+    for (let i = 0; i < c; i++) this.photoQueue.push({ k: 'ph', u: uid, n, id, i, c, d: dataUrl.slice(i * size, (i + 1) * size) });
+  }
+  republishPhotos() {
+    for (const [n, data] of Object.entries(this.localPhotos)) {
+      this.queuePhoto(+n, data, randFrom('abcdefghijklmnopqrstuvwxyz0123456789', 6));
+      if (!this.photos[n]) this.photos[n] = data;
+    }
+  }
+  startTime() {
+    if (this.meta && this.meta.st) return this.meta.st * 1000;
+    const d = new Date(); d.setHours(DEFAULT_START[0], DEFAULT_START[1], 0, 0);
+    return d.getTime();
+  }
   candidate(ci) {
     const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null };
-    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n };
+    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || null };
   }
 }
 
@@ -595,9 +675,11 @@ const ICON = {
 
 /* ================== Navigation ================== */
 let session = null;
-const ui = { tab: 'cand', search: '', hideElim: false, rankScope: 'group', rankCrit: -1, sheetCi: null, chatSeen: 0 };
+const ui = { tab: 'cand', search: '', hideElim: false, rankScope: 'group', rankCrit: -1, sheetCi: null, chatSeen: 0, chatNotified: 0 };
 
 function go(view, arg) {
+  clearInterval(timelineTimer); timelineTimer = null;
+  hideMsgBanner();
   if (session && view !== 'room') { session.close(); session = null; }
   closeSheet();
   if (view === 'home') renderHome();
@@ -710,7 +792,7 @@ async function createRoom(name) {
     await s.loadHistory();
     if (s.seen.size) continue; // code déjà utilisé
     s.local = { seq: 1, votes: EMPTY_VOTES, metaSeq: 1 };
-    s.meta = { h: uid, s: 1, name, phase: 'avant', names: {}, elim: [], crown: null };
+    s.meta = { h: uid, s: 1, name, phase: 'avant', names: {}, elim: [], crown: null, st: null, du: DEFAULT_DURATION };
     await s.post(s.metaPayload());
     await s.post(s.userPayload());
     s.save();
@@ -760,13 +842,20 @@ async function openRoom({ code, joining }) {
   }
   session = s;
   rememberRoom(code, s.meta.name);
-  ui.tab = 'cand'; ui.search = ''; ui.sheetCi = null; ui.chatSeen = s.chat.length;
+  ui.tab = 'cand'; ui.search = ''; ui.sheetCi = null;
+  { // messages déjà lus : retrouvés grâce au dernier message vu, gardé sur le téléphone
+    const lastSeen = store.get('mp_seen_' + code, null);
+    const i = lastSeen ? s.chat.findIndex(m => m.id === lastSeen) : -1;
+    ui.chatSeen = lastSeen ? (i >= 0 ? i + 1 : s.chat.length) : s.chat.length;
+    ui.chatNotified = s.chat.length;
+  }
 
   // Rejoindre / rafraîchir sa présence (les messages expirent au bout de 12 h sur ntfy.sh)
   const now = Date.now() / 1000;
   if (s.local.seq === 0 || !s.users[uid]) { s.local.seq += 1; s.users[uid] = { n: pseudo, v: s.local.votes, s: s.local.seq, t: now }; s.pendingUser = true; }
   else if (s.users[uid].n !== pseudo || now - s.myLastTime > 6 * 3600) { s.touchUser(); }
-  if (s.isHost && now - s.metaLastTime > 6 * 3600) s.pendingMeta = true;
+  if (s.isHost && now - s.metaLastTime > 6 * 3600) { s.pendingMeta = true; s.republishPhotos(); }
+  if (s.isHost) for (const [n, d] of Object.entries(s.localPhotos)) if (!s.photos[n]) s.photos[n] = d;
   s.save();
   s.flush();
 
@@ -774,6 +863,7 @@ async function openRoom({ code, joining }) {
   s.onchange = scheduleRender;
   s.connect();
   renderRoom();
+  timelineTimer = setInterval(renderTimeline, 20000);
   if (joining) toast(`Bienvenue dans « ${s.meta.name} »`);
 }
 
@@ -801,6 +891,7 @@ function buildRoomShell() {
       <div class="live" id="r-live" title="Synchronisation"><span class="dot"></span></div>
     </header>
     <div class="phase" id="r-phase"></div>
+    <div class="timeline" id="r-timeline"></div>
     <main class="main" id="r-main">
       <section id="tab-cand" class="stack">
         <div class="stack" style="gap:12px;margin-bottom:6px">
@@ -887,14 +978,28 @@ function renderRoom() {
   $('#r-live').className = 'live ' + (s.live ? 'on' : 'off');
   $('#r-live').title = s.live ? 'En direct' : 'Connexion…';
   const syncTxt = s.syncError ? 'envoi en attente' : (s.hasPending ? 'envoi…' : (s.live ? 'en direct' : 'connexion…'));
+  renderTimeline();
   $('#r-phase').innerHTML = `<span class="eyebrow">${esc(ph.t)}</span><span class="sep"></span><span class="sync">${syncTxt}</span>`;
   for (const t of ['cand', 'rank', 'chat', 'room']) {
     $('#tab-' + t).classList.toggle('hidden', ui.tab !== t);
     $(`#tabbar [data-tab="${t}"]`).classList.toggle('active', ui.tab === t);
   }
   $('#chatbar').classList.toggle('hidden', ui.tab !== 'chat');
-  if (ui.tab === 'chat') ui.chatSeen = s.chat.length;
-  $('#chat-badge').classList.toggle('hidden', s.chat.length <= ui.chatSeen);
+  if (ui.tab === 'chat' && ui.chatSeen !== s.chat.length) {
+    ui.chatSeen = s.chat.length;
+    if (s.chat.length) store.set('mp_seen_' + s.code, s.chat[s.chat.length - 1].id);
+    hideMsgBanner();
+  }
+  const unread = s.chat.slice(ui.chatSeen).filter(m => m.u !== uid).length;
+  const badge = $('#chat-badge');
+  badge.classList.toggle('hidden', unread === 0);
+  badge.textContent = unread > 99 ? '99+' : String(unread);
+  // petite bannière en haut quand une copine écrit pendant qu'on est sur un autre onglet
+  if (s.chat.length > ui.chatNotified) {
+    const fresh = s.chat.slice(ui.chatNotified).filter(m => m.u !== uid);
+    ui.chatNotified = s.chat.length;
+    if (fresh.length && ui.tab !== 'chat') showMsgBanner(fresh[fresh.length - 1]);
+  }
 
   if (ui.tab === 'cand') renderCandidates();
   else if (ui.tab === 'rank') renderRanking();
@@ -902,6 +1007,36 @@ function renderRoom() {
   else renderRoomInfo();
   if (ui.sheetCi !== null) renderRatingBody();
 }
+
+let bannerTimer;
+function showMsgBanner(m) {
+  hideMsgBanner();
+  const b = document.createElement('button');
+  b.className = 'msg-banner';
+  b.id = 'msg-banner';
+  b.innerHTML = `<span class="rdot"></span><span class="grow"><span class="who">${esc(m.n)}</span><span class="txt">${esc(m.x)}</span></span>`;
+  b.onclick = () => { hideMsgBanner(); closeSheet(); ui.tab = 'chat'; renderRoom(); scrollChatBottom(); };
+  document.body.appendChild(b);
+  try { navigator.vibrate && navigator.vibrate(15); } catch {}
+  bannerTimer = setTimeout(hideMsgBanner, 4500);
+}
+function hideMsgBanner() { clearTimeout(bannerTimer); const b = $('#msg-banner'); if (b) b.remove(); }
+
+const hhmm = ms => { const d = new Date(ms); return `${d.getHours()} h ${String(d.getMinutes()).padStart(2, '0')}`; };
+const dur = min => { min = Math.max(0, Math.round(min)); const h = Math.floor(min / 60), m = min % 60; return h ? `${h} h ${String(m).padStart(2, '0')}` : `${m} min`; };
+function renderTimeline() {
+  const s = session, el = $('#r-timeline'); if (!s || !el) return;
+  const start = s.startTime(), end = start + s.meta.du * 60000, now = Date.now();
+  const pct = Math.min(100, Math.max(0, (now - start) / (end - start) * 100));
+  let label;
+  if (now < start) label = (start - now) < 36 * 3600000 ? `Début dans ${dur((start - now) / 60000)}` : `Le ${new Date(start).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`;
+  else if (now < end) label = `En direct · ${dur((now - start) / 60000)}`;
+  else label = 'Cérémonie terminée';
+  el.className = 'timeline' + (now >= start && now < end ? ' tl-live' : '');
+  el.innerHTML = `<div class="tl-bar"><i style="width:${pct}%"></i><b style="left:${pct}%"></b></div>
+    <div class="tl-labels"><span>${hhmm(start)}</span><span class="now">${label}</span><span>${hhmm(end)}</span></div>`;
+}
+let timelineTimer = null;
 
 function renderCandidates() {
   const s = session; if (!s) return;
@@ -920,7 +1055,7 @@ function renderCandidates() {
     const dots = CRITERIA.map((cr, k) => `<i class="${s.score(uid, ci, k) ? 'on' : ''}" title="${cr.t}"></i>`).join('');
     html += `
       <button class="cand ${c.elim ? 'elim' : ''} ${c.crown ? 'crowned' : ''}" data-ci="${ci}">
-        <span class="num">${c.n}</span>
+        ${c.photo ? `<img class="photo" src="${c.photo}" alt="">` : `<span class="num">${c.n}</span>`}
         <span class="info">
           <span class="name">${esc(c.title)}</span>
           ${c.crown ? `<span class="tag">${ICON.crown} Miss France 2027</span>` : c.name ? `<span class="sub">${esc(c.name)}</span>` : ''}
@@ -950,7 +1085,7 @@ function renderRanking() {
   $('#rank-list').innerHTML = list.length ? list.map((r, i) => {
     const c = s.candidate(r.ci);
     return `<button class="rank ${i < 3 ? 'top' : ''} ${c.elim ? 'elim' : ''}" data-ci="${r.ci}">
-      <span class="pos">${i + 1}</span>
+      <span class="pos">${i + 1}</span>${c.photo ? `<img class="photo" src="${c.photo}" alt="">` : ''}
       <span class="grow"><span class="name">${esc(c.title)} ${c.crown ? ICON.crown : ''}</span>${c.name ? `<span class="small muted">${esc(c.name)}</span>` : ''}<div class="bar"><i style="width:${r.v * 10}%"></i></div></span>
       <span class="val"><div class="big">${fmt(r.v)}</div>${only ? '' : `<div class="tiny muted" style="margin-top:3px">${plural(r.n, 'vote')}</div>`}</span>
     </button>`;
@@ -977,6 +1112,11 @@ function renderChat() {
 }
 function scrollChatBottom() { requestAnimationFrame(() => { const m = $('#r-main'); if (m) m.scrollTop = m.scrollHeight; }); }
 
+function toLocalInput(ms) {
+  const d = new Date(ms), p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 function shareUrl(code) {
   const u = new URL(location.href);
   u.search = '';
@@ -992,7 +1132,7 @@ function renderRoomInfo() {
   const ph = phaseOf(s.meta.phase);
   const members = Object.entries(s.users).sort((a, b) => (a[0] === s.meta.h ? -1 : b[0] === s.meta.h ? 1 : a[1].n.localeCompare(b[1].n)));
   const el = $('#tab-room');
-  if (document.activeElement && el.contains(document.activeElement) && document.activeElement.tagName === 'SELECT') return; // ne pas fermer la liste pendant le choix
+  if (document.activeElement && el.contains(document.activeElement) && (document.activeElement.tagName === 'SELECT' || document.activeElement.tagName === 'INPUT')) return; // ne pas fermer la liste pendant le choix
   el.innerHTML = `
     <div class="card invite">
       <div class="eyebrow">Code d'invitation</div>
@@ -1009,7 +1149,13 @@ function renderRoomInfo() {
       <label class="setting"><span>Étape de l'émission</span>
         <select id="phase">${PHASES.map(p => `<option value="${p.k}" ${p.k === ph.k ? 'selected' : ''}>${esc(p.t)}</option>`).join('')}</select>
       </label>
-      <p class="small muted" style="margin:10px 0 0">Pour nommer une candidate, l'éliminer ou la couronner, touche-la dans l'onglet Candidates.</p>`
+      <label class="setting"><span>Début de l'émission</span>
+        <input id="start" type="datetime-local" value="${toLocalInput(s.startTime())}" style="background:var(--surface-2);border:1px solid var(--line-strong);border-radius:999px;padding:7px 10px;max-width:58%;font-size:14px">
+      </label>
+      <label class="setting"><span>Durée</span>
+        <select id="duration">${[150, 170, 180, 190, 200, 210, 220, 240].map(m => `<option value="${m}" ${m === s.meta.du ? 'selected' : ''}>${dur(m)}</option>`).join('')}</select>
+      </label>
+      <p class="small muted" style="margin:10px 0 0">Pour ajouter la photo ou le nom d'une candidate, l'éliminer ou la couronner, touche-la dans l'onglet Candidates.</p>`
       : `<div class="setting" style="border:0;padding:0"><span>Étape de l'émission</span><span class="italic" style="font-size:16px">${esc(ph.t)}</span></div>`}
     </div>
     <div class="card">
@@ -1051,7 +1197,50 @@ function renderRoomInfo() {
       if (v) { s.updateMeta({ name: v }); rememberRoom(s.code, v); }
     };
     $('#phase').onchange = e => { s.updateMeta({ phase: e.target.value }); e.target.blur(); };
+    $('#start').onchange = e => { const t = new Date(e.target.value).getTime(); if (Number.isFinite(t)) s.updateMeta({ st: Math.round(t / 1000) }); e.target.blur(); };
+    $('#duration').onchange = e => { s.updateMeta({ du: +e.target.value }); e.target.blur(); };
   }
+}
+
+/* ---------- Photos des candidates ---------- */
+function pickPhoto(n) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if (!file || !session) return;
+    try {
+      const data = await compressPhoto(file);
+      session.setPhoto(n, data);
+      toast('Photo ajoutée');
+    } catch { toast("Impossible de lire cette image"); }
+  };
+  input.click();
+}
+// Recadre en portrait 3:4 et réduit l'image pour qu'elle passe vite par le salon.
+function compressPhoto(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const W = 150, H = 200, r = W / H;
+      let sw = img.naturalWidth, sh = img.naturalHeight, sx = 0, sy = 0;
+      if (sw / sh > r) { const nw = sh * r; sx = (sw - nw) / 2; sw = nw; }
+      else { const nh = sw / r; sy = (sh - nh) * 0.2; sh = nh; }   // garde le haut de l'image (le visage)
+      const cv = document.createElement('canvas');
+      cv.width = W; cv.height = H;
+      const ctx = cv.getContext('2d');
+      ctx.fillStyle = '#E5DECE'; ctx.fillRect(0, 0, W, H);
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
+      let q = 0.7, out = cv.toDataURL('image/jpeg', q);
+      while (out.length > 14000 && q > 0.3) { q -= 0.1; out = cv.toDataURL('image/jpeg', q); }
+      resolve(out);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('image')); };
+    img.src = url;
+  });
 }
 
 /* ---------- Feuille de notation ---------- */
@@ -1071,6 +1260,10 @@ function openRating(ci) {
       if (n >= 0 && n < NC) { ui.sheetCi = n; renderRatingBody(); sh.scrollTop = 0; }
     } else if (b.id === 'done') {
       closeSheet(); s.flush(); renderRoom();
+    } else if (b.id === 'set-photo') {
+      pickPhoto(ui.sheetCi + 1);
+    } else if (b.id === 'del-photo') {
+      s.setPhoto(ui.sheetCi + 1, null);
     } else if (b.id === 'set-name') {
       const c = s.candidate(ui.sheetCi);
       const v = prompt(`Prénom et nom de ${c.title}`, c.name);
@@ -1100,7 +1293,8 @@ function renderRatingBody() {
       <button id="next" ${ci === NC - 1 ? 'disabled' : ''}>Suivante${ICON.next}</button>
     </div>
     <div class="sheet-head">
-      <span class="num ${c.crown ? 'crowned' : ''}">${c.n}</span>
+      ${c.photo ? `<img class="sheet-photo" src="${c.photo}" alt="${esc(c.title)}">` : ''}
+      <span class="num ${c.crown ? 'crowned' : ''}" ${c.photo ? 'style="display:none"' : ''}>${c.n}</span>
       <h2>${esc(c.title)}</h2>
       ${c.name ? `<div class="muted" style="margin-top:2px">${esc(c.name)}</div>` : ''}
       ${c.crown ? `<div class="tag" style="margin-top:6px">${ICON.crown} Miss France 2027</div>` : ''}
@@ -1118,6 +1312,8 @@ function renderRatingBody() {
     ${s.isHost ? `
       <div class="host-box stack">
         <div class="eyebrow center">Réservé à l'organisatrice</div>
+        <button class="btn btn-soft" id="set-photo">${c.photo ? 'Changer la photo' : 'Ajouter une photo'}</button>
+        ${c.photo ? '<button class="btn-text" id="del-photo">Retirer la photo</button>' : ''}
         <button class="btn btn-soft" id="set-name">${c.name ? 'Modifier le nom' : 'Ajouter son prénom et nom'}</button>
         <div class="row">
           <button class="btn btn-outline" id="toggle-elim">${c.elim ? 'Repêcher' : 'Éliminer'}</button>
