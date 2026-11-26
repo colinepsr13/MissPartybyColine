@@ -138,6 +138,21 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .tally { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
 .tally .grow { flex: 1; }
 .tally .bar { margin-top: 6px; }
+.voices { padding: 16px 0 8px; border-top: 1px solid var(--line); }
+.rec-row { display: flex; align-items: center; gap: 14px; margin: 12px 0 6px; }
+.rec-btn { width: 56px; height: 56px; border-radius: 50%; background: var(--umber); color: var(--lace); display: grid; place-items: center; flex: none; }
+.rec-btn.on { background: var(--red); animation: recpulse 1.4s infinite; }
+@keyframes recpulse { 0% { box-shadow: 0 0 0 0 rgba(200,65,59,.45); } 70% { box-shadow: 0 0 0 14px rgba(200,65,59,0); } 100% { box-shadow: 0 0 0 0 rgba(200,65,59,0); } }
+.rec-hint { flex: 1; font-size: 13px; color: var(--muted); }
+.rec-hint .t { font-family: var(--serif); font-size: 22px; color: var(--red); font-variant-numeric: lining-nums tabular-nums; }
+.voice { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.voice .play { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line-strong); display: grid; place-items: center; color: var(--umber); flex: none; }
+.voice .play.on { background: var(--blush); border-color: var(--blush); color: #fff; }
+.voice .grow { flex: 1; min-width: 0; }
+.voice .wave { display: flex; align-items: center; gap: 2px; height: 16px; margin-top: 3px; }
+.voice .wave i { width: 2px; border-radius: 1px; background: var(--peach); }
+.voice.playing .wave i { background: var(--blush); }
+.vcount { display: inline-flex; align-items: center; gap: 3px; margin-left: 10px; font-size: 11px; color: var(--blush); vertical-align: middle; }
 .phase .sync { font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
 .main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 16px 24px; }
 .tabbar { display: flex; border-top: 1px solid var(--line); background: var(--bg); padding-bottom: var(--safe-bottom); }
@@ -394,6 +409,7 @@ class RoomSession {
     this.pendingMeta = false;
     this.pendingUser = false;
     this.chatQueue = [];
+    this.voices = [];          // réactions vocales {id, u, n, ci, url, d, t, exp}
     this.photos = {};          // n° candidate -> image (data URL)
     this.photoParts = {};      // morceaux de photo en cours de réception
     this.photoQueue = [];      // morceaux à envoyer (organisatrice)
@@ -485,6 +501,14 @@ class RoomSession {
       }
       return true;
     }
+    if (d.k === 'voice') {
+      const att = ev.attachment;
+      if (!att || typeof att.url !== 'string' || !/^https?:\/\//.test(att.url)) return false;
+      const ci = d.c;
+      if (!Number.isInteger(ci) || ci < 0 || ci >= NC) return false;
+      this.voices.push({ id: ev.id, u: d.u, n: clampStr(d.n, 30) || 'Copine', ci, url: att.url, d: Math.min(60, Math.max(0, +d.d || 0)), t, exp: att.expires || 0 });
+      return true;
+    }
     if (d.k === 'chat') {
       const x = clampStr(d.x, 500);
       if (!x) return false;
@@ -544,6 +568,14 @@ class RoomSession {
     this.onchange = () => {};
   }
 
+  // Envoie un fichier audio : ntfy le garde en pièce jointe, le message porte nos infos en JSON.
+  async postVoice(blob, ci, dur, ext) {
+    const meta = JSON.stringify({ k: 'voice', u: uid, n: pseudo, c: ci, d: Math.round(dur * 10) / 10 });
+    const url = `${NTFY}/${this.topic}?filename=${encodeURIComponent('vocal-' + Date.now() + '.' + ext)}&message=${encodeURIComponent(meta)}`;
+    const r = await fetch(url, { method: 'PUT', body: blob });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+  }
+  voicesFor(ci) { return this.voices.filter(v => v.ci === ci); }
   async post(obj) {
     const body = JSON.stringify(obj);
     const r = await fetch(`${NTFY}/${this.topic}`, { method: 'POST', body, keepalive: true });
@@ -710,6 +742,11 @@ class RoomSession {
 
 /* ================== Icônes (traits fins) ================== */
 const ICON = {
+  mic: '<svg class="i" viewBox="0 0 24 24"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>',
+  micS: '<svg class="i" viewBox="0 0 24 24" style="width:13px;height:13px"><rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/></svg>',
+  stop: '<svg class="i" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>',
+  play: '<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>',
+  pause: '<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M8 5.5v13M16 5.5v13" stroke-width="2.4"/></svg>',
   insta: '<svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.6"/><circle cx="16.8" cy="7.2" r=".6" fill="currentColor"/></svg>',
   laurel: '<svg class="i" viewBox="0 0 24 24"><path d="M12 20c-4.5-1-7.5-4.6-7.5-9.5M12 20c4.5-1 7.5-4.6 7.5-9.5"/><path d="M5.2 13.5c-1.4-.2-2.4-1-2.7-2.3 1.4-.1 2.4.5 2.9 1.6M6.6 16.4c-1.3.3-2.5-.1-3.2-1.2 1.3-.4 2.5-.1 3.3.8M4.6 10.2c-1.2-.7-1.7-1.8-1.5-3.1 1.3.5 2 1.5 2.1 2.7M18.8 13.5c1.4-.2 2.4-1 2.7-2.3-1.4-.1-2.4.5-2.9 1.6M17.4 16.4c1.3.3 2.5-.1 3.2-1.2-1.3-.4-2.5-.1-3.3.8M19.4 10.2c1.2-.7 1.7-1.8 1.5-3.1-1.3.5-2 1.5-2.1 2.7"/><path d="M9.5 7.5l1.2-2.5 1.3 1.6L13.3 5l1.2 2.5z"/></svg>',
   back: '<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -816,7 +853,7 @@ function sheetShell(inner) {
   bg.addEventListener('click', e => { if (e.target === bg) closeSheet(); });
   return bg.firstElementChild;
 }
-function closeSheet() { $('#sheet-root').innerHTML = ''; ui.sheetCi = null; }
+function closeSheet() { if (typeof cancelRecording === 'function') cancelRecording(); $('#sheet-root').innerHTML = ''; ui.sheetCi = null; }
 
 function openCreateSheet() {
   const sh = sheetShell(`
@@ -906,6 +943,7 @@ async function openRoom({ code, joining }) {
     const i = lastSeen ? s.chat.findIndex(m => m.id === lastSeen) : -1;
     ui.chatSeen = lastSeen ? (i >= 0 ? i + 1 : s.chat.length) : s.chat.length;
     ui.chatNotified = s.chat.length;
+    ui.voiceNotified = s.voices.length;
   }
 
   // Rejoindre / rafraîchir sa présence (les messages expirent au bout de 12 h sur ntfy.sh)
@@ -1060,6 +1098,12 @@ function renderRoom() {
     ui.chatNotified = s.chat.length;
     if (fresh.length && ui.tab !== 'chat') showMsgBanner(fresh[fresh.length - 1]);
   }
+  if (s.voices.length > ui.voiceNotified) {
+    const fresh = s.voices.slice(ui.voiceNotified).filter(v => v.u !== uid);
+    ui.voiceNotified = s.voices.length;
+    const v = fresh[fresh.length - 1];
+    if (v && ui.sheetCi !== v.ci) showMsgBanner({ n: v.n, x: `a laissé un vocal sur ${s.candidate(v.ci).title}` }, () => openRating(v.ci));
+  }
 
   if (ui.tab === 'cand') renderCandidates();
   else if (ui.tab === 'rank') renderRanking();
@@ -1070,13 +1114,13 @@ function renderRoom() {
 }
 
 let bannerTimer;
-function showMsgBanner(m) {
+function showMsgBanner(m, onOpen) {
   hideMsgBanner();
   const b = document.createElement('button');
   b.className = 'msg-banner';
   b.id = 'msg-banner';
   b.innerHTML = `<span class="rdot"></span><span class="grow"><span class="who">${esc(m.n)}</span><span class="txt">${esc(m.x)}</span></span>`;
-  b.onclick = () => { hideMsgBanner(); closeSheet(); ui.tab = 'chat'; renderRoom(); scrollChatBottom(); };
+  b.onclick = onOpen ? () => { hideMsgBanner(); onOpen(); } : () => { hideMsgBanner(); closeSheet(); ui.tab = 'chat'; renderRoom(); scrollChatBottom(); };
   document.body.appendChild(b);
   try { navigator.vibrate && navigator.vibrate(15); } catch {}
   bannerTimer = setTimeout(hideMsgBanner, 4500);
@@ -1120,7 +1164,7 @@ function renderCandidates() {
         <span class="info">
           <span class="name">${esc(c.title)}</span>
           ${c.place ? `<span class="tag">${c.place === 1 ? ICON.crown + ' ' : ''}${PLACES[c.place]}</span>` : c.name ? `<span class="sub">${esc(c.name)}</span>` : ''}
-          <span class="crit-dots">${dots}</span>
+          <span class="crit-dots">${dots}${s.voicesFor(ci).length ? `<span class="vcount">${ICON.micS}${s.voicesFor(ci).length}</span>` : ''}</span>
         </span>
         <span class="score">
           ${mine ? `<div class="big">${fmt(mine.v)}</div>` : '<div class="todo">À noter</div>'}
@@ -1316,6 +1360,111 @@ function renderRoomInfo() {
   }
 }
 
+/* ---------- Réactions vocales ---------- */
+const MAX_VOICE = 30; // secondes
+let rec = null;        // enregistrement en cours
+let player = null, playingId = null;
+
+function voicesHtml(s, ci) {
+  const list = s.voicesFor(ci).slice().reverse();
+  const recording = rec && rec.ci === ci;
+  const secs = recording ? Math.floor((Date.now() - rec.start) / 1000) : 0;
+  const bars = id => { let h = 0; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return Array.from({ length: 22 }, (_, i) => { h = (h * 1103515245 + 12345) >>> 0; return `<i style="height:${4 + (h >> 16) % 12}px"></i>`; }).join(''); };
+  const now = Date.now() / 1000;
+  return `<div class="voices">
+    <div class="crit-head" style="margin-bottom:0"><span class="name">Réactions vocales</span><span class="small muted">${list.length ? plural(list.length, 'vocal').replace('vocals', 'vocaux') : ''}</span></div>
+    <div class="rec-row">
+      <button class="rec-btn ${recording ? 'on' : ''}" id="rec" aria-label="${recording ? 'Envoyer' : 'Enregistrer'}">${recording ? ICON.stop : ICON.mic}</button>
+      <div class="rec-hint">${recording
+        ? `<span class="t" id="rec-time">0:${String(secs).padStart(2, '0')}</span> · touche pour envoyer<br><button class="link-btn" id="rec-cancel" style="margin-top:4px">Annuler</button>`
+        : rec && rec.sending === ci ? 'Envoi du vocal…' : `Touche le micro pour réagir à voix haute (${MAX_VOICE} s max). Tout le salon pourra l'écouter.`}</div>
+    </div>
+    ${list.map(v => {
+      const expired = v.exp && v.exp < now;
+      return `<div class="voice ${playingId === v.id ? 'playing' : ''}">
+        <button class="play ${playingId === v.id ? 'on' : ''}" data-play="${v.id}" ${expired ? 'disabled style="opacity:.35"' : ''}>${playingId === v.id ? ICON.pause : ICON.play}</button>
+        <span class="grow"><span>${esc(v.n)}</span>${v.u === uid ? ' <span class="small muted">· moi</span>' : ''}<div class="wave">${bars(v.id)}</div></span>
+        <span class="tiny muted" style="text-align:right">${v.d ? Math.round(v.d) + ' s' : ''}<br>${expired ? 'expiré' : timeStr(v.t)}</span>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function pickMime() {
+  const types = ['audio/mp4', 'audio/aac', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'];
+  for (const t of types) { try { if (window.MediaRecorder && MediaRecorder.isTypeSupported(t)) return t; } catch {} }
+  return '';
+}
+
+async function toggleRecording(ci) {
+  if (rec && rec.mr) { stopAndSend(); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) { toast("Les vocaux ne sont pas pris en charge sur ce navigateur"); return; }
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch { toast('Autorise le micro pour Safari dans les Réglages de ton iPhone'); return; }
+  const mime = pickMime();
+  let mr;
+  try { mr = new MediaRecorder(stream, mime ? { mimeType: mime, audioBitsPerSecond: 32000 } : undefined); }
+  catch { mr = new MediaRecorder(stream); }
+  const chunks = [];
+  mr.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+  rec = { ci, mr, stream, chunks, start: Date.now(), mime: mr.mimeType || mime, cancelled: false };
+  mr.onstop = () => finishRecording(rec === null ? null : rec);
+  mr.start();
+  haptic();
+  rec.tick = setInterval(() => {
+    if (!rec) return;
+    const secs = Math.floor((Date.now() - rec.start) / 1000);
+    const el = $('#rec-time'); if (el) el.textContent = `0:${String(secs).padStart(2, '0')}`;
+    if (secs >= MAX_VOICE) stopAndSend();
+  }, 250);
+  renderRatingBody();
+}
+function stopAndSend() {
+  if (!rec || !rec.mr) return;
+  rec.dur = (Date.now() - rec.start) / 1000;
+  clearInterval(rec.tick);
+  try { rec.mr.stop(); } catch {}
+}
+function cancelRecording() {
+  if (!rec || !rec.mr) return;
+  rec.cancelled = true;
+  clearInterval(rec.tick);
+  try { rec.mr.stop(); } catch {}
+}
+async function finishRecording(r) {
+  if (!r) return;
+  r.stream.getTracks().forEach(t => t.stop());
+  const s = session, ci = r.ci;
+  rec = null;
+  if (r.cancelled || !s) { renderRatingBody(); return; }
+  if ((r.dur || 0) < 0.6) { toast('Vocal trop court'); renderRatingBody(); return; }
+  const type = (r.mime || 'audio/mp4').split(';')[0];
+  const blob = new Blob(r.chunks, { type });
+  const ext = type.includes('webm') ? 'webm' : type.includes('ogg') ? 'ogg' : 'm4a';
+  rec = { sending: ci };
+  renderRatingBody();
+  try { await s.postVoice(blob, ci, r.dur, ext); toast('Vocal envoyé'); }
+  catch { toast("Le vocal n'a pas pu être envoyé, réessaie"); }
+  rec = null;
+  renderRatingBody();
+  renderRoom();
+}
+function togglePlay(id) {
+  const s = session; if (!s) return;
+  const v = s.voices.find(x => x.id === id); if (!v) return;
+  if (player) { player.pause(); player = null; }
+  if (playingId === id) { playingId = null; renderRatingBody(); return; }
+  playingId = id;
+  player = new Audio(v.url);
+  player.onended = player.onerror = () => {
+    if (player && player.error) toast('Ce vocal ne peut plus être écouté');
+    playingId = null; player = null; renderRatingBody();
+  };
+  player.play().catch(() => { playingId = null; player = null; toast('Lecture impossible'); renderRatingBody(); });
+  renderRatingBody();
+}
+
 /* ---------- Palmarès ---------- */
 function renderPalmares(el) {
   if (!el) return;
@@ -1406,6 +1555,9 @@ function openRating(ci) {
   sh.addEventListener('click', e => {
     const s = session; if (!s) return;
     const b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'rec') { toggleRecording(ui.sheetCi); return; }
+    if (b.id === 'rec-cancel') { cancelRecording(); renderRatingBody(); return; }
+    if (b.dataset.play) { togglePlay(b.dataset.play); return; }
     if (b.dataset.score) {
       const [k, v] = b.dataset.score.split(':').map(Number);
       const cur = s.score(uid, ui.sheetCi, k);
@@ -1463,6 +1615,7 @@ function renderRatingBody() {
       ${regionHistory(REGIONS[ci]) ? `<div class="small italic" style="margin-top:8px;color:var(--taupe);font-size:15px">${esc(regionHistory(REGIONS[ci]))}</div>` : ''}
       <div class="overall">${mine ? `Ma note · ${fmt(mine.v)} / 10` : 'Note-la de 1 à 10 sur chaque critère'}</div>
     </div>
+    ${voicesHtml(s, ci)}
     ${CRITERIA.map((cr, k) => {
       const my = s.score(uid, ci, k), g = s.average(ci, k);
       return `<div class="crit-card">
