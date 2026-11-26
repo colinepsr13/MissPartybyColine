@@ -336,6 +336,17 @@ const PAST_WINNERS = [
   { y: 2013, name: 'Marine Lorphelin',          region: 'Bourgogne',          date: '8 décembre 2012' },
   { y: 2012, name: 'Delphine Wespiser',         region: 'Alsace',             date: '3 décembre 2011' },
   { y: 2011, name: 'Laury Thilleman',           region: 'Bretagne',           date: '4 décembre 2010' },
+  { y: 2010, name: 'Malika Ménard',             region: 'Normandie' },
+  { y: 2009, name: 'Chloé Mortaud',             region: 'Midi-Pyrénées',      note: 'Élue sous l\'écharpe de Miss Albigeois Midi-Pyrénées' },
+  { y: 2008, name: 'Valérie Bègue',             region: 'Réunion' },
+  { y: 2007, name: 'Rachel Legrain-Trapani',    region: 'Picardie' },
+  { y: 2006, name: 'Alexandra Rosenfeld',       region: 'Languedoc',          note: 'Élue ensuite Miss Europe 2006' },
+  { y: 2005, name: 'Cindy Fabre',               region: 'Normandie' },
+  { y: 2004, name: 'Lætitia Bléger',            region: 'Alsace' },
+  { y: 2003, name: 'Corinne Coman',             region: 'Guadeloupe' },
+  { y: 2002, name: 'Sylvie Tellier',            region: 'Centre-Val de Loire', note: 'Élue sous l\'écharpe de Miss Orléanais' },
+  { y: 2001, name: 'Élodie Gossuin',            region: 'Picardie',           note: 'Élue ensuite Miss Europe 2001' },
+  { y: 2000, name: 'Sonia Rolland',             region: 'Bourgogne' },
 ];
 const PLACES = ['', 'Miss France 2027', '1re dauphine', '2e dauphine', '3e dauphine', '4e dauphine'];
 const DEFAULT_START = [21, 10];   // heure de début habituelle de l'émission (21 h 10)
@@ -1482,7 +1493,7 @@ function renderPalmares(el) {
       <div class="yr">${w.y}</div>
       <div class="wname">${esc(w.name)}</div>
       <div class="wreg">Miss ${esc(w.region)}</div>
-      <div class="wdate">Élue le ${esc(w.date)}</div>
+      <div class="wdate">${w.date ? 'Élue le ' + esc(w.date) : 'Élue en décembre ' + (w.y - 1)}</div>
       ${w.note ? `<div class="small italic" style="margin-top:6px;color:var(--taupe);font-size:15px">${esc(w.note)}</div>` : ''}
       ${w.ig
         ? `<a class="btn btn-outline" style="margin-top:18px;text-decoration:none" href="https://www.instagram.com/${encodeURIComponent(w.ig)}/" target="_blank" rel="noopener">${ICON.insta} @${esc(w.ig)}</a>`
