@@ -120,10 +120,28 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .cand.crowned .photo { border: 2px solid var(--umber); }
 .rank .photo { width: 36px; height: 36px; }
 .sheet-photo { display: block; width: 132px; height: 176px; object-fit: cover; border-radius: 70px 70px 14px 14px; margin: 2px auto 12px; border: 1px solid var(--peach); }
+.podium { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); width: 100%; text-align: left; }
+.podium:first-of-type { border-top: 0; }
+.podium .place { width: 92px; flex: none; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--taupe); }
+.podium.first .place { color: var(--blush); }
+.podium .grow { flex: 1; min-width: 0; }
+.podium .grow .name { display: block; font-family: var(--serif); font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.podium.first .grow .name { font-size: 22px; }
+.pill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill-list span { padding: 5px 11px; border: 1px solid var(--line-strong); border-radius: 999px; font-size: 12px; color: var(--taupe); }
+.winner-card { text-align: center; padding: 28px 20px 24px; }
+.winner-card .yr { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--taupe); }
+.winner-card .wname { font-family: var(--serif); font-size: 32px; line-height: 1.1; margin: 10px 0 6px; }
+.winner-card .wreg { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--blush); }
+.winner-card .wdate { font-size: 13px; color: var(--muted); margin-top: 14px; }
+.year-chips .chip { font-family: var(--serif); font-size: 16px; letter-spacing: 0; text-transform: none; padding: 6px 14px; }
+.tally { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.tally .grow { flex: 1; }
+.tally .bar { margin-top: 6px; }
 .phase .sync { font-size: 10.5px; color: var(--muted); letter-spacing: .06em; }
 .main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 16px 24px; }
 .tabbar { display: flex; border-top: 1px solid var(--line); background: var(--bg); padding-bottom: var(--safe-bottom); }
-.tabbar button { flex: 1; padding: 10px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); position: relative; }
+.tabbar button { flex: 1; min-width: 0; padding: 10px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); position: relative; }
 .tabbar button.active { color: var(--umber); }
 .tabbar .badge { position: absolute; top: 3px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--red); color: #fff; font-size: 10.5px; font-weight: 400; letter-spacing: 0; line-height: 18px; text-align: center; box-shadow: 0 0 0 2px var(--bg); animation: pop .25s ease-out; }
 @keyframes pop { from { transform: scale(.4); } }
@@ -283,6 +301,27 @@ const REGIONS = [
 ];
 const REACTIONS = ['😍', '👑', '🔥', '😱', '👏', '😂', '💅', '😭', '🤩', '👀'];
 const NC = REGIONS.length, NK = CRITERIA.length;
+/* Palmarès Miss France (année du titre, élection en décembre de l'année précédente).
+   Les régions sont rattachées aux noms actuels de la liste REGIONS. */
+const PAST_WINNERS = [
+  { y: 2026, name: 'Hinaupoko Devèze',          region: 'Tahiti',             date: '6 décembre 2025' },
+  { y: 2025, name: 'Angélique Angarni-Filopon', region: 'Martinique',         date: '14 décembre 2024' },
+  { y: 2024, name: 'Ève Gilles',                region: 'Nord-Pas-de-Calais', date: '16 décembre 2023' },
+  { y: 2023, name: 'Indira Ampiot',             region: 'Guadeloupe',         date: '17 décembre 2022' },
+  { y: 2022, name: 'Diane Leyre',               region: 'Île-de-France',      date: '11 décembre 2021' },
+  { y: 2021, name: 'Amandine Petit',            region: 'Normandie',          date: '19 décembre 2020' },
+  { y: 2020, name: 'Clémence Botino',           region: 'Guadeloupe',         date: '14 décembre 2019' },
+  { y: 2019, name: 'Vaimalama Chaves',          region: 'Tahiti',             date: '15 décembre 2018' },
+  { y: 2018, name: 'Maëva Coucke',              region: 'Nord-Pas-de-Calais', date: '16 décembre 2017' },
+  { y: 2017, name: 'Alicia Aylies',             region: 'Guyane',             date: '17 décembre 2016' },
+  { y: 2016, name: 'Iris Mittenaere',           region: 'Nord-Pas-de-Calais', date: '19 décembre 2015', note: 'Élue ensuite Miss Univers 2016' },
+  { y: 2015, name: 'Camille Cerf',              region: 'Nord-Pas-de-Calais', date: '6 décembre 2014' },
+  { y: 2014, name: 'Flora Coquerel',            region: 'Centre-Val de Loire', date: '7 décembre 2013', note: 'Élue sous l\'écharpe de Miss Orléanais' },
+  { y: 2013, name: 'Marine Lorphelin',          region: 'Bourgogne',          date: '8 décembre 2012' },
+  { y: 2012, name: 'Delphine Wespiser',         region: 'Alsace',             date: '3 décembre 2011' },
+  { y: 2011, name: 'Laury Thilleman',           region: 'Bretagne',           date: '4 décembre 2010' },
+];
+const PLACES = ['', 'Miss France 2027', '1re dauphine', '2e dauphine', '3e dauphine', '4e dauphine'];
 const DEFAULT_START = [21, 10];   // heure de début habituelle de l'émission (21 h 10)
 const DEFAULT_DURATION = 200;     // durée habituelle : environ 3 h 20
 const EMPTY_VOTES = '0'.repeat(NC * NK);
@@ -411,6 +450,7 @@ class RoomSession {
         names,
         elim: Array.isArray(d.e) ? d.e.filter(n => Number.isInteger(n) && n >= 1 && n <= NC) : [],
         crown: Number.isInteger(d.w) && d.w >= 1 && d.w <= NC ? d.w : null,
+        pl: (() => { const o = {}; if (d.pl && typeof d.pl === 'object') for (const [k, v] of Object.entries(d.pl)) { const n = +k; if (n >= 1 && n <= NC && Number.isInteger(v) && v >= 1 && v <= 5) o[n] = v; } return o; })(),
         st: Number.isFinite(d.st) && d.st > 0 ? d.st : null,
         du: Number.isInteger(d.du) && d.du >= 30 && d.du <= 480 ? d.du : DEFAULT_DURATION,
       };
@@ -510,7 +550,7 @@ class RoomSession {
   }
   metaPayload() {
     const m = this.meta;
-    return { k: 'room', u: uid, s: m.s, n: m.name, p: m.phase, c: m.names, e: m.elim, w: m.crown, st: m.st, du: m.du };
+    return { k: 'room', u: uid, s: m.s, n: m.name, p: m.phase, c: m.names, e: m.elim, w: m.crown, st: m.st, du: m.du, pl: m.pl };
   }
   userPayload() {
     return { k: 'user', u: uid, s: this.local.seq, n: pseudo, v: this.local.votes };
@@ -647,19 +687,29 @@ class RoomSession {
       if (!this.photos[n]) this.photos[n] = data;
     }
   }
+  setPlace(n, place) {
+    const pl = Object.assign({}, this.meta.pl || {});
+    for (const k of Object.keys(pl)) if (+k === n || (place && pl[k] === place)) delete pl[k];
+    if (place) pl[n] = place;
+    let crown = this.meta.crown;
+    if (place === 1) crown = n; else if (crown === n) crown = null;
+    const elim = place ? this.meta.elim.filter(x => x !== n) : this.meta.elim;
+    this.updateMeta({ pl, crown, elim });
+  }
   startTime() {
     if (this.meta && this.meta.st) return this.meta.st * 1000;
     const d = new Date(); d.setHours(DEFAULT_START[0], DEFAULT_START[1], 0, 0);
     return d.getTime();
   }
   candidate(ci) {
-    const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null };
-    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || null };
+    const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null, pl: {} };
+    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || null, place: (m.pl && m.pl[n]) || (m.crown === n ? 1 : 0) };
   }
 }
 
 /* ================== Icônes (traits fins) ================== */
 const ICON = {
+  laurel: '<svg class="i" viewBox="0 0 24 24"><path d="M12 20c-4.5-1-7.5-4.6-7.5-9.5M12 20c4.5-1 7.5-4.6 7.5-9.5"/><path d="M5.2 13.5c-1.4-.2-2.4-1-2.7-2.3 1.4-.1 2.4.5 2.9 1.6M6.6 16.4c-1.3.3-2.5-.1-3.2-1.2 1.3-.4 2.5-.1 3.3.8M4.6 10.2c-1.2-.7-1.7-1.8-1.5-3.1 1.3.5 2 1.5 2.1 2.7M18.8 13.5c1.4-.2 2.4-1 2.7-2.3-1.4-.1-2.4.5-2.9 1.6M17.4 16.4c1.3.3 2.5-.1 3.2-1.2-1.3-.4-2.5-.1-3.3.8M19.4 10.2c1.2-.7 1.7-1.8 1.5-3.1-1.3.5-2 1.5-2.1 2.7"/><path d="M9.5 7.5l1.2-2.5 1.3 1.6L13.3 5l1.2 2.5z"/></svg>',
   back: '<svg class="i" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>',
   chev: '<svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M9 5l7 7-7 7"/></svg>',
   prev: '<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -741,6 +791,7 @@ function renderHome() {
         <button class="btn btn-primary" id="create">Créer un salon</button>
         <button class="btn btn-outline" id="join">Rejoindre avec un code</button>
       </div>
+      <button class="btn btn-soft" id="hist">Le palmarès Miss France</button>
       ${hint}
       <div class="section-head"><span class="eyebrow">Mes salons</span><hr class="rule"></div>
       ${rooms || '<p class="center italic muted" style="font-size:17px;margin:4px 0">Aucun salon pour le moment.</p>'}
@@ -748,6 +799,11 @@ function renderHome() {
   $('#create').onclick = openCreateSheet;
   $('#join').onclick = () => openJoinSheet('');
   $('#edit-pseudo').onclick = () => go('pseudo');
+  $('#hist').onclick = () => {
+    const sh = sheetShell('<h2 class="sheet-title" style="margin-bottom:12px">Le palmarès</h2><div id="hist-sheet" class="stack" style="gap:14px"></div><button class="btn-text" id="hist-close" style="display:block;margin:12px auto 0">Fermer</button>');
+    renderPalmares($('#hist-sheet', sh));
+    $('#hist-close', sh).onclick = closeSheet;
+  };
   $('#app').querySelectorAll('[data-code]').forEach(b => b.onclick = () => go('room', { code: b.dataset.code }));
 }
 
@@ -792,7 +848,7 @@ async function createRoom(name) {
     await s.loadHistory();
     if (s.seen.size) continue; // code déjà utilisé
     s.local = { seq: 1, votes: EMPTY_VOTES, metaSeq: 1 };
-    s.meta = { h: uid, s: 1, name, phase: 'avant', names: {}, elim: [], crown: null, st: null, du: DEFAULT_DURATION };
+    s.meta = { h: uid, s: 1, name, phase: 'avant', names: {}, elim: [], crown: null, st: null, du: DEFAULT_DURATION, pl: {} };
     await s.post(s.metaPayload());
     await s.post(s.userPayload());
     s.save();
@@ -906,7 +962,7 @@ function buildRoomShell() {
       </section>
       <section id="tab-rank" class="stack hidden" style="gap:14px">
         <div class="seg" id="rank-scope">
-          <button data-scope="group">Le groupe</button><button data-scope="me">Mon classement</button>
+          <button data-scope="group">Le groupe</button><button data-scope="me">Le mien</button><button data-scope="official">Officiel</button>
         </div>
         <div id="rank-awards" class="card"></div>
         <div class="chips" id="rank-chips"></div>
@@ -914,6 +970,7 @@ function buildRoomShell() {
       </section>
       <section id="tab-chat" class="hidden"><div class="msgs" id="chat-list"></div></section>
       <section id="tab-room" class="stack hidden" style="gap:14px"></section>
+      <section id="tab-hist" class="stack hidden" style="gap:14px"></section>
     </main>
     <div class="chatbar hidden" id="chatbar">
       <div class="reacts">${REACTIONS.map(e => `<button data-react="${e}">${e}</button>`).join('')}</div>
@@ -926,6 +983,7 @@ function buildRoomShell() {
       <button data-tab="cand">${ICON.star}Candidates</button>
       <button data-tab="rank">${ICON.trophy}Classement</button>
       <button data-tab="chat">${ICON.chat}Chat<span class="badge hidden" id="chat-badge"></span></button>
+      <button data-tab="hist">${ICON.laurel}Palmarès</button>
       <button data-tab="room">${ICON.people}Salon</button>
     </nav>
   </div>`;
@@ -980,7 +1038,7 @@ function renderRoom() {
   const syncTxt = s.syncError ? 'envoi en attente' : (s.hasPending ? 'envoi…' : (s.live ? 'en direct' : 'connexion…'));
   renderTimeline();
   $('#r-phase').innerHTML = `<span class="eyebrow">${esc(ph.t)}</span><span class="sep"></span><span class="sync">${syncTxt}</span>`;
-  for (const t of ['cand', 'rank', 'chat', 'room']) {
+  for (const t of ['cand', 'rank', 'chat', 'hist', 'room']) {
     $('#tab-' + t).classList.toggle('hidden', ui.tab !== t);
     $(`#tabbar [data-tab="${t}"]`).classList.toggle('active', ui.tab === t);
   }
@@ -1004,6 +1062,7 @@ function renderRoom() {
   if (ui.tab === 'cand') renderCandidates();
   else if (ui.tab === 'rank') renderRanking();
   else if (ui.tab === 'chat') renderChat();
+  else if (ui.tab === 'hist') renderPalmares($('#tab-hist'));
   else renderRoomInfo();
   if (ui.sheetCi !== null) renderRatingBody();
 }
@@ -1058,7 +1117,7 @@ function renderCandidates() {
         ${c.photo ? `<img class="photo" src="${c.photo}" alt="">` : `<span class="num">${c.n}</span>`}
         <span class="info">
           <span class="name">${esc(c.title)}</span>
-          ${c.crown ? `<span class="tag">${ICON.crown} Miss France 2027</span>` : c.name ? `<span class="sub">${esc(c.name)}</span>` : ''}
+          ${c.place ? `<span class="tag">${c.place === 1 ? ICON.crown + ' ' : ''}${PLACES[c.place]}</span>` : c.name ? `<span class="sub">${esc(c.name)}</span>` : ''}
           <span class="crit-dots">${dots}</span>
         </span>
         <span class="score">
@@ -1070,10 +1129,63 @@ function renderCandidates() {
   $('#cand-list').innerHTML = html || '<div class="empty"><div class="t">Aucun résultat</div></div>';
 }
 
+// Résultats officiels saisis par l'organisatrice + comparaison avec les pronostics du salon
+function officialHtml(s) {
+  const all = Array.from({ length: NC }, (_, ci) => s.candidate(ci));
+  const placed = all.filter(c => c.place).sort((a, b) => a.place - b.place);
+  const anyElim = all.some(c => c.elim);
+  if (!placed.length && !anyElim) {
+    return `<div class="empty"><div class="t">Résultats à venir</div>Le soir de l'élection, l'organisatrice saisit les résultats officiels au fur et à mesure de leur annonce : ils s'afficheront ici.</div>`;
+  }
+  const status = c => c.place ? PLACES[c.place] : c.elim ? 'Éliminée' : (anyElim ? 'Encore en lice' : 'En lice');
+  const photo = c => c.photo ? `<img class="photo" src="${c.photo}" alt="">` : `<span class="num ${c.place === 1 ? 'crowned' : ''}">${c.n}</span>`;
+  let html = '';
+  if (placed.length) {
+    html += `<div class="card"><h3 class="awards-title">Résultats officiels</h3>` + placed.map(c => `
+      <button class="podium ${c.place === 1 ? 'first' : ''}" data-ci="${c.ci}">
+        <span class="place">${c.place === 1 ? ICON.crown + ' ' : ''}${PLACES[c.place]}</span>
+        ${photo(c)}
+        <span class="grow"><span class="name">${esc(c.title)}</span>${c.name ? `<span class="small muted">${esc(c.name)}</span>` : ''}</span>
+      </button>`).join('') + `</div>`;
+  }
+  const still = all.filter(c => !c.elim && !c.place);
+  if (anyElim && still.length && still.length <= 15) {
+    html += `<div class="card"><div class="eyebrow" style="margin-bottom:10px">Encore en lice · ${still.length}</div><div class="pill-list">${still.map(c => `<span>${esc(REGIONS[c.ci])}</span>`).join('')}</div></div>`;
+  }
+  // Qui avait vu juste ?
+  const members = Object.entries(s.users);
+  const official5 = placed.map(c => c.ci);
+  const rows = members.map(([u, m]) => {
+    const r = s.ranking(-1, u);
+    if (!r.length) return null;
+    const fav = s.candidate(r[0].ci);
+    const top5 = r.slice(0, 5).map(x => x.ci);
+    const hits = official5.filter(ci => top5.includes(ci)).length;
+    const favScore = fav.place ? 10 - fav.place : fav.elim ? 0 : 1;
+    return { u, n: m.n, fav, hits, sort: favScore * 10 + hits };
+  }).filter(Boolean).sort((a, b) => b.sort - a.sort);
+  if (rows.length) {
+    html += `<div class="card"><h3 class="awards-title">Qui avait vu juste ?</h3>` + rows.map(r => `
+      <div class="list-item">
+        <span class="avatar ${r.fav.place === 1 ? 'host' : ''}">${esc((r.n[0] || '?').toUpperCase())}</span>
+        <span style="flex:1;min-width:0">
+          <span>${esc(r.n)}</span>${r.u === uid ? ' <span class="small muted">· moi</span>' : ''}
+          <div class="small muted">Sa favorite : ${esc(r.fav.title)} · <span style="color:${r.fav.place ? 'var(--blush)' : 'inherit'}">${status(r.fav)}</span></div>
+          ${placed.length ? `<div class="tiny muted">${r.hits} / ${placed.length} de son top 5 au palmarès</div>` : ''}
+        </span>
+      </div>`).join('') + `</div>`;
+  }
+  return html;
+}
+
 function renderRanking() {
   const s = session; if (!s) return;
   const only = ui.rankScope === 'me' ? uid : null;
   $('#rank-scope').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.scope === ui.rankScope));
+  const official = ui.rankScope === 'official';
+  $('#rank-awards').classList.toggle('hidden', official);
+  $('#rank-chips').classList.toggle('hidden', official);
+  if (official) { $('#rank-list').innerHTML = officialHtml(s); return; }
   $('#rank-awards').innerHTML = `<h3 class="awards-title">${only ? 'Mes prix' : 'Les prix du salon'}</h3>` +
     CRITERIA.map((cr, k) => {
       const best = s.ranking(k, only)[0];
@@ -1202,6 +1314,44 @@ function renderRoomInfo() {
   }
 }
 
+/* ---------- Palmarès ---------- */
+function renderPalmares(el) {
+  if (!el) return;
+  if (!ui.histYear) ui.histYear = PAST_WINNERS[0].y;
+  const w = PAST_WINNERS.find(x => x.y === ui.histYear) || PAST_WINNERS[0];
+  const tally = {};
+  for (const x of PAST_WINNERS) (tally[x.region] = tally[x.region] || []).push(x.y);
+  const top = Object.entries(tally).sort((a, b) => b[1].length - a[1].length || b[1][0] - a[1][0]);
+  const max = top[0][1].length;
+  el.innerHTML = `
+    <div class="chips year-chips">${PAST_WINNERS.map(x => `<button class="chip ${x.y === w.y ? 'active' : ''}" data-year="${x.y}">${x.y}</button>`).join('')}</div>
+    <div class="card winner-card">
+      <div class="eyebrow">Miss France</div>
+      <div class="yr">${w.y}</div>
+      <div class="wname">${esc(w.name)}</div>
+      <div class="wreg">Miss ${esc(w.region)}</div>
+      <div class="wdate">Élue le ${esc(w.date)}</div>
+      ${w.note ? `<div class="small italic" style="margin-top:6px;color:var(--taupe);font-size:15px">${esc(w.note)}</div>` : ''}
+    </div>
+    <div class="card">
+      <h3 class="awards-title">Les régions les plus titrées</h3>
+      <p class="center small muted" style="margin:-2px 0 6px">Depuis ${PAST_WINNERS[PAST_WINNERS.length - 1].y}</p>
+      ${top.map(([reg, years]) => `
+        <div class="tally">
+          <span class="grow"><span class="serif" style="font-size:17px">Miss ${esc(reg)}</span><div class="tiny muted">${years.join(' · ')}</div><div class="bar"><i style="width:${years.length / max * 100}%"></i></div></span>
+          <span class="big" style="font-size:20px">${years.length}</span>
+        </div>`).join('')}
+    </div>`;
+  el.querySelectorAll('[data-year]').forEach(b => b.onclick = () => { ui.histYear = +b.dataset.year; renderPalmares(el); });
+}
+function regionHistory(region) {
+  const ys = PAST_WINNERS.filter(x => x.region === region).map(x => x.y).sort((a, b) => a - b);
+  if (!ys.length) return '';
+  const last = PAST_WINNERS.find(x => x.y === ys[ys.length - 1]);
+  return ys.length === 1 ? `Sa région a remporté la couronne en ${ys[0]} (${last.name})`
+    : `Sa région a remporté la couronne ${ys.length} fois : ${ys.join(', ')}`;
+}
+
 /* ---------- Photos des candidates ---------- */
 function pickPhoto(n) {
   const input = document.createElement('input');
@@ -1271,12 +1421,16 @@ function openRating(ci) {
     } else if (b.id === 'toggle-elim') {
       const c = s.candidate(ui.sheetCi);
       const elim = c.elim ? s.meta.elim.filter(n => n !== c.n) : s.meta.elim.concat(c.n);
-      s.updateMeta({ elim, crown: !c.elim && c.crown ? null : s.meta.crown });
-    } else if (b.id === 'toggle-crown') {
-      const c = s.candidate(ui.sheetCi);
-      if (c.crown) s.updateMeta({ crown: null });
-      else { s.updateMeta({ crown: c.n, elim: s.meta.elim.filter(n => n !== c.n) }); toast(`${c.title} est couronnée Miss France 2027`); }
+      const pl = Object.assign({}, s.meta.pl || {}); if (!c.elim) delete pl[c.n];
+      s.updateMeta({ elim, pl, crown: !c.elim && c.crown ? null : s.meta.crown });
     }
+  });
+  sh.addEventListener('change', e => {
+    const s = session; if (!s || e.target.id !== 'placement') return;
+    const c = s.candidate(ui.sheetCi), place = +e.target.value;
+    s.setPlace(c.n, place);
+    e.target.blur();
+    if (place === 1) toast(`${c.title} est couronnée Miss France 2027`);
   });
   renderRatingBody();
 }
@@ -1284,6 +1438,7 @@ function openRating(ci) {
 function renderRatingBody() {
   const s = session, box = $('#rating');
   if (!s || !box || ui.sheetCi === null) return;
+  if (document.activeElement && box.contains(document.activeElement) && document.activeElement.tagName === 'SELECT') return;
   const ci = ui.sheetCi, c = s.candidate(ci);
   const mine = s.overall(ci, uid);
   box.innerHTML = `
@@ -1297,8 +1452,9 @@ function renderRatingBody() {
       <span class="num ${c.crown ? 'crowned' : ''}" ${c.photo ? 'style="display:none"' : ''}>${c.n}</span>
       <h2>${esc(c.title)}</h2>
       ${c.name ? `<div class="muted" style="margin-top:2px">${esc(c.name)}</div>` : ''}
-      ${c.crown ? `<div class="tag" style="margin-top:6px">${ICON.crown} Miss France 2027</div>` : ''}
+      ${c.place ? `<div class="tag" style="margin-top:6px">${c.place === 1 ? ICON.crown + ' ' : ''}${PLACES[c.place]}</div>` : ''}
       ${c.elim ? '<div class="tag" style="margin-top:6px">Éliminée</div>' : ''}
+      ${regionHistory(REGIONS[ci]) ? `<div class="small italic" style="margin-top:8px;color:var(--taupe);font-size:15px">${esc(regionHistory(REGIONS[ci]))}</div>` : ''}
       <div class="overall">${mine ? `Ma note · ${fmt(mine.v)} / 10` : 'Note-la de 1 à 10 sur chaque critère'}</div>
     </div>
     ${CRITERIA.map((cr, k) => {
@@ -1315,10 +1471,10 @@ function renderRatingBody() {
         <button class="btn btn-soft" id="set-photo">${c.photo ? 'Changer la photo' : 'Ajouter une photo'}</button>
         ${c.photo ? '<button class="btn-text" id="del-photo">Retirer la photo</button>' : ''}
         <button class="btn btn-soft" id="set-name">${c.name ? 'Modifier le nom' : 'Ajouter son prénom et nom'}</button>
-        <div class="row">
-          <button class="btn btn-outline" id="toggle-elim">${c.elim ? 'Repêcher' : 'Éliminer'}</button>
-          <button class="btn btn-primary" id="toggle-crown">${c.crown ? 'Retirer' : 'Couronner'}</button>
-        </div>
+        <label class="setting" style="border-top:0"><span>Résultat officiel</span>
+          <select id="placement">${PLACES.map((t, i) => `<option value="${i}" ${i === c.place ? 'selected' : ''}>${i ? t : '—'}</option>`).join('')}</select>
+        </label>
+        <button class="btn btn-outline" id="toggle-elim">${c.elim ? 'Repêcher' : 'Éliminer'}</button>
       </div>` : ''}`;
 }
 
