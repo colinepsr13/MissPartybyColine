@@ -1737,6 +1737,24 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('pagehide', () => { if (session) session.flush(); });
 
+/* ---------- Mise à jour automatique : recharge l'app quand une nouvelle version est publiée ---------- */
+const APP_VERSION = '202611261243';
+async function checkForUpdate() {
+  try {
+    const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) return;
+    const { v } = await r.json();
+    if (!v || v === APP_VERSION) return;
+    const key = 'mp_reload_' + v;
+    if (sessionStorage.getItem(key)) return;   // évite une boucle si le cache n'est pas encore à jour
+    sessionStorage.setItem(key, '1');
+    if (rec && rec.mr) return;                 // ne coupe pas un vocal en cours
+    location.reload();
+  } catch {}
+}
+checkForUpdate();
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForUpdate(); });
+
 (function start() {
   const code = normCode(params.get('code') || '');
   if (params.get('code')) {
