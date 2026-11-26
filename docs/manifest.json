@@ -1,13 +1,13 @@
 {
-  "name": "Miss Party 2027",
+  "name": "Miss Party",
   "short_name": "Miss Party",
   "description": "Notez les Miss France 2027 entre copines, en direct.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#100f33",
-  "theme_color": "#100f33",
+  "background_color": "#E5DECE",
+  "theme_color": "#E5DECE",
   "lang": "fr",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
