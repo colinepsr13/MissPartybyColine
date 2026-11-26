@@ -9,7 +9,7 @@ Elle s'ouvre dans Safari et s'installe sur l'écran d'accueil comme une vraie ap
 **Mettre l'app en ligne (une seule fois, depuis l'iPhone)** :
 1. Sur github.com, ouvre ce dépôt > **Settings** > **Pages**.
 2. *Source* : **Deploy from a branch**. *Branch* : `claude/miss-france-ranking-app-27vy7k`, dossier **`/docs`**, puis **Save**.
-3. Une minute plus tard, l'app est en ligne sur **https://colinepsr13.github.io/d-p-t-coline-/**
+3. Une minute plus tard, l'app est en ligne sur **https://colinepsr13.github.io/MissPartybyColine/**
 
 **L'installer** : ouvre le lien dans Safari > bouton **Partager** ⬆️ > **« Sur l'écran d'accueil »**.
 
