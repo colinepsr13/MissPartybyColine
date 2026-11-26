@@ -1,0 +1,485 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1AA312E1455EC2B8920EEBCC /* CandidateRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054B1E64BB60E53D1E29BACC /* CandidateRatingView.swift */; };
+		1D3652E587D0F38C4411BBFC /* RankingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C87D74BEBEAFAB1D6253B5 /* RankingView.swift */; };
+		2A8F7CC55E1E17F9FAB61BB5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 321B7D73356737B50583A0FD /* Assets.xcassets */; };
+		30B37BB91583D80435282110 /* RoomStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C37489147B1A734D8BDFC5E /* RoomStore.swift */; };
+		4BF45DE1E180D281FF63F127 /* CandidatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF09C5F1A5037A577583C2B /* CandidatesView.swift */; };
+		53AD36C40200341424649D28 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF276DAABD9075C413CD128 /* ChatView.swift */; };
+		5507C3863435CE73FC76A82F /* RoomRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDE8D2959036359AD029D1A8 /* RoomRepository.swift */; };
+		56F637E9233D2F57EBE422ED /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB63CF6D4E89BD82C7CB312 /* Theme.swift */; };
+		6C8ED076F364F6815F8C0C60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 668B7355307276F015870A6C /* FirebaseFirestore */; };
+		A663822F640FC2C7C9A288AD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADB934BE6E78A65232A4644 /* HomeView.swift */; };
+		B1BBA00B2C7AFAC08CD5D6B7 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD4A86770EB017D0107E2C5 /* HomeStore.swift */; };
+		B28166998E1C9ACB0FD94946 /* MissFrancePartyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C5D5D3266C3070DDD9A372 /* MissFrancePartyApp.swift */; };
+		B4341170566A27EF7FEA4E3C /* RoomInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8258E18E73843F6C3D9708 /* RoomInfoView.swift */; };
+		D5F136FDE5EB5F5150FCEAEF /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C274E3DC21DA7E1750A21C5B /* FirebaseAuth */; };
+		E2EA0CC04884F54FDA6D518E /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DCE68BD98A6A70E3728287F /* SessionStore.swift */; };
+		EE7B0508A2F12C08E2CCF8BE /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A10645E3F2B9CECB396575 /* RootView.swift */; };
+		F1D7661E086FCB9D8961AC95 /* RoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04762987F7095D13A136BF /* RoomView.swift */; };
+		F2CA63390D1D3FAD0F5DF7A2 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5BA6FE8E68388AFE7DC53D4 /* Models.swift */; };
+		F3C51CED1F362AE94D85FF81 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0C4E8487C6DC81776BCAFCE6 /* GoogleService-Info.plist */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		054B1E64BB60E53D1E29BACC /* CandidateRatingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CandidateRatingView.swift; sourceTree = "<group>"; };
+		0C4E8487C6DC81776BCAFCE6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0DF09C5F1A5037A577583C2B /* CandidatesView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CandidatesView.swift; sourceTree = "<group>"; };
+		29C87D74BEBEAFAB1D6253B5 /* RankingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RankingView.swift; sourceTree = "<group>"; };
+		2EF276DAABD9075C413CD128 /* ChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		321B7D73356737B50583A0FD /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3BB63CF6D4E89BD82C7CB312 /* Theme.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		52A10645E3F2B9CECB396575 /* RootView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		6DCE68BD98A6A70E3728287F /* SessionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
+		7ADB934BE6E78A65232A4644 /* HomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		7C37489147B1A734D8BDFC5E /* RoomStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomStore.swift; sourceTree = "<group>"; };
+		A5BA6FE8E68388AFE7DC53D4 /* Models.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A6C5D5D3266C3070DDD9A372 /* MissFrancePartyApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MissFrancePartyApp.swift; sourceTree = "<group>"; };
+		BB8258E18E73843F6C3D9708 /* RoomInfoView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomInfoView.swift; sourceTree = "<group>"; };
+		BC04762987F7095D13A136BF /* RoomView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomView.swift; sourceTree = "<group>"; };
+		BCD4A86770EB017D0107E2C5 /* HomeStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
+		BDE8D2959036359AD029D1A8 /* RoomRepository.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RoomRepository.swift; sourceTree = "<group>"; };
+		D2013DC429D6B3D93C4F3948 /* MissFranceParty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MissFranceParty.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		898139F8D5C5CDE2F2722951 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D5F136FDE5EB5F5150FCEAEF /* FirebaseAuth in Frameworks */,
+				6C8ED076F364F6815F8C0C60 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		478D6140A6344B94B9A13159 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A5BA6FE8E68388AFE7DC53D4 /* Models.swift */,
+			);
+			name = Models;
+			path = Models;
+			sourceTree = "<group>";
+		};
+		5008DC911FB23B2E5892E326 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				BCD4A86770EB017D0107E2C5 /* HomeStore.swift */,
+				BDE8D2959036359AD029D1A8 /* RoomRepository.swift */,
+				7C37489147B1A734D8BDFC5E /* RoomStore.swift */,
+				6DCE68BD98A6A70E3728287F /* SessionStore.swift */,
+			);
+			name = Services;
+			path = Services;
+			sourceTree = "<group>";
+		};
+		5D587CCA5336967E16A6EC0A /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A6C5D5D3266C3070DDD9A372 /* MissFrancePartyApp.swift */,
+			);
+			name = App;
+			path = App;
+			sourceTree = "<group>";
+		};
+		6466A4B7FA261F4F8035129B /* MissFranceParty */ = {
+			isa = PBXGroup;
+			children = (
+				5D587CCA5336967E16A6EC0A /* App */,
+				478D6140A6344B94B9A13159 /* Models */,
+				5008DC911FB23B2E5892E326 /* Services */,
+				885A1CBB8789B8AF27EB45AB /* Views */,
+				B032862D4822C10564F7BC01 /* Resources */,
+				0C4E8487C6DC81776BCAFCE6 /* GoogleService-Info.plist */,
+			);
+			name = MissFranceParty;
+			path = MissFranceParty;
+			sourceTree = "<group>";
+		};
+		7779C380C8B6B58D36CF6D85 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		885A1CBB8789B8AF27EB45AB /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				054B1E64BB60E53D1E29BACC /* CandidateRatingView.swift */,
+				0DF09C5F1A5037A577583C2B /* CandidatesView.swift */,
+				2EF276DAABD9075C413CD128 /* ChatView.swift */,
+				7ADB934BE6E78A65232A4644 /* HomeView.swift */,
+				29C87D74BEBEAFAB1D6253B5 /* RankingView.swift */,
+				BB8258E18E73843F6C3D9708 /* RoomInfoView.swift */,
+				BC04762987F7095D13A136BF /* RoomView.swift */,
+				52A10645E3F2B9CECB396575 /* RootView.swift */,
+				3BB63CF6D4E89BD82C7CB312 /* Theme.swift */,
+			);
+			name = Views;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B032862D4822C10564F7BC01 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				321B7D73356737B50583A0FD /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CA4EA0A7236B44781DD68974 = {
+			isa = PBXGroup;
+			children = (
+				EEF547ED331DEB8D4E21B936 /* Products */,
+				7779C380C8B6B58D36CF6D85 /* Frameworks */,
+				6466A4B7FA261F4F8035129B /* MissFranceParty */,
+			);
+			sourceTree = "<group>";
+		};
+		EEF547ED331DEB8D4E21B936 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2013DC429D6B3D93C4F3948 /* MissFranceParty.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FA8CE248778DDFD6C025D34B /* MissFranceParty */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E47E3873DA00CD914668AFD6 /* Build configuration list for PBXNativeTarget "MissFranceParty" */;
+			buildPhases = (
+				1771688D6C7C4807E242FCEA /* Sources */,
+				898139F8D5C5CDE2F2722951 /* Frameworks */,
+				C035956D18EE1574A65834EF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MissFranceParty;
+			packageProductDependencies = (
+				C274E3DC21DA7E1750A21C5B /* FirebaseAuth */,
+				668B7355307276F015870A6C /* FirebaseFirestore */,
+			);
+			productName = MissFranceParty;
+			productReference = D2013DC429D6B3D93C4F3948 /* MissFranceParty.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DFF2E7E09E4850EF0B3663B4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = 4214606D28AB832E21267DF5 /* Build configuration list for PBXProject "MissFranceParty" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				fr,
+				Base,
+			);
+			mainGroup = CA4EA0A7236B44781DD68974;
+			minimizedProjectReferenceProxies = 0;
+			packageReferences = (
+				2E9CF03CF3D8C9B4CF664DBF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 100;
+			productRefGroup = EEF547ED331DEB8D4E21B936 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FA8CE248778DDFD6C025D34B /* MissFranceParty */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C035956D18EE1574A65834EF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A8F7CC55E1E17F9FAB61BB5 /* Assets.xcassets in Resources */,
+				F3C51CED1F362AE94D85FF81 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1771688D6C7C4807E242FCEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B28166998E1C9ACB0FD94946 /* MissFrancePartyApp.swift in Sources */,
+				F2CA63390D1D3FAD0F5DF7A2 /* Models.swift in Sources */,
+				B1BBA00B2C7AFAC08CD5D6B7 /* HomeStore.swift in Sources */,
+				5507C3863435CE73FC76A82F /* RoomRepository.swift in Sources */,
+				30B37BB91583D80435282110 /* RoomStore.swift in Sources */,
+				E2EA0CC04884F54FDA6D518E /* SessionStore.swift in Sources */,
+				1AA312E1455EC2B8920EEBCC /* CandidateRatingView.swift in Sources */,
+				4BF45DE1E180D281FF63F127 /* CandidatesView.swift in Sources */,
+				53AD36C40200341424649D28 /* ChatView.swift in Sources */,
+				A663822F640FC2C7C9A288AD /* HomeView.swift in Sources */,
+				1D3652E587D0F38C4411BBFC /* RankingView.swift in Sources */,
+				B4341170566A27EF7FEA4E3C /* RoomInfoView.swift in Sources */,
+				F1D7661E086FCB9D8961AC95 /* RoomView.swift in Sources */,
+				EE7B0508A2F12C08E2CCF8BE /* RootView.swift in Sources */,
+				56F637E9233D2F57EBE422ED /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		4546E12A6274D90A6FCF53C8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_LANGUAGE = fr;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Miss Party";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.missparty.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BBFCDA32D5FCF357A55BB535 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_LANGUAGE = fr;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Miss Party";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = fr.missparty.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CC6EB6149ACE71B7D61A3D18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		D1A207FAF4F34297C9FED638 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4214606D28AB832E21267DF5 /* Build configuration list for PBXProject "MissFranceParty" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1A207FAF4F34297C9FED638 /* Debug */,
+				CC6EB6149ACE71B7D61A3D18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E47E3873DA00CD914668AFD6 /* Build configuration list for PBXNativeTarget "MissFranceParty" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BBFCDA32D5FCF357A55BB535 /* Release */,
+				4546E12A6274D90A6FCF53C8 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2E9CF03CF3D8C9B4CF664DBF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		668B7355307276F015870A6C /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2E9CF03CF3D8C9B4CF664DBF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		C274E3DC21DA7E1750A21C5B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2E9CF03CF3D8C9B4CF664DBF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DFF2E7E09E4850EF0B3663B4 /* Project object */;
+}

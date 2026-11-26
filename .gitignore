@@ -1,0 +1,8 @@
+.DS_Store
+xcuserdata/
+DerivedData/
+*.xcuserstate
+build/
+.swiftpm/
+# Fichier de configuration Firebase personnel (à télécharger depuis ta console Firebase)
+MissFranceParty/GoogleService-Info.plist

@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// Règles de sécurité Firestore pour Miss Party 2027.
+// À copier dans la console Firebase > Firestore Database > Règles.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function roomData(roomId) {
+      return get(/databases/$(database)/documents/rooms/$(roomId)).data;
+    }
+
+    // État du salon *après* l'écriture (utile pendant la création du salon en lot).
+    function roomAfter(roomId) {
+      return getAfter(/databases/$(database)/documents/rooms/$(roomId)).data;
+    }
+
+    function isMember(roomId) {
+      return signedIn() && request.auth.uid in roomData(roomId).memberIds;
+    }
+
+    function isMemberAfter(roomId) {
+      return signedIn() && request.auth.uid in roomAfter(roomId).memberIds;
+    }
+
+    function isHostAfter(roomId) {
+      return signedIn() && roomAfter(roomId).hostId == request.auth.uid;
+    }
+
+    match /rooms/{roomId} {
+      // Lecture ouverte aux personnes connectées : nécessaire pour retrouver un salon par son code.
+      allow read: if signedIn();
+
+      allow create: if signedIn()
+        && request.resource.data.hostId == request.auth.uid
+        && request.resource.data.memberIds == [request.auth.uid]
+        && request.resource.data.code is string
+        && request.resource.data.code.size() == 6;
+
+      allow update: if signedIn() && (
+        // L'organisatrice peut tout modifier sauf l'organisatrice et le code.
+        (resource.data.hostId == request.auth.uid
+          && request.resource.data.hostId == resource.data.hostId
+          && request.resource.data.code == resource.data.code)
+        ||
+        // Les autres peuvent seulement s'ajouter ou se retirer de la liste des membres.
+        (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberIds'])
+          && (request.resource.data.memberIds.toSet() == resource.data.memberIds.toSet().union([request.auth.uid].toSet())
+              || request.resource.data.memberIds.toSet() == resource.data.memberIds.toSet().difference([request.auth.uid].toSet())))
+      );
+
+      allow delete: if signedIn() && resource.data.hostId == request.auth.uid;
+
+      match /members/{memberId} {
+        allow read: if isMember(roomId);
+        allow create, update: if signedIn() && request.auth.uid == memberId && isMemberAfter(roomId);
+        allow delete: if signedIn() && request.auth.uid == memberId;
+      }
+
+      match /candidates/{candidateId} {
+        allow read: if isMember(roomId);
+        allow write: if isHostAfter(roomId);
+      }
+
+      match /votes/{voteId} {
+        allow read: if isMember(roomId);
+        allow create, update: if isMember(roomId)
+          && voteId == request.auth.uid + '_' + request.resource.data.candidateId
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.scores is map;
+        allow delete: if isMember(roomId) && resource.data.userId == request.auth.uid;
+      }
+
+      match /messages/{messageId} {
+        allow read: if isMember(roomId);
+        allow create: if isMember(roomId)
+          && request.resource.data.userId == request.auth.uid
+          && request.resource.data.text is string
+          && request.resource.data.text.size() <= 500;
+      }
+    }
+  }
+}
