@@ -320,16 +320,16 @@ const NC = REGIONS.length, NK = CRITERIA.length;
    Ajouter ig: 'identifiant' (sans @) pour afficher le compte Instagram vérifié ; photo : docs/hist/ANNEE.jpg.
    Les régions sont rattachées aux noms actuels de la liste REGIONS. */
 const PAST_WINNERS = [
-  { y: 2026, name: 'Hinaupoko Devèze',          region: 'Tahiti',             date: '6 décembre 2025' },
-  { y: 2025, name: 'Angélique Angarni-Filopon', region: 'Martinique',         date: '14 décembre 2024' },
-  { y: 2024, name: 'Ève Gilles',                region: 'Nord-Pas-de-Calais', date: '16 décembre 2023' },
-  { y: 2023, name: 'Indira Ampiot',             region: 'Guadeloupe',         date: '17 décembre 2022' },
-  { y: 2022, name: 'Diane Leyre',               region: 'Île-de-France',      date: '11 décembre 2021' },
-  { y: 2021, name: 'Amandine Petit',            region: 'Normandie',          date: '19 décembre 2020' },
-  { y: 2020, name: 'Clémence Botino',           region: 'Guadeloupe',         date: '14 décembre 2019' },
+  { y: 2026, name: 'Hinaupoko Devèze',          region: 'Tahiti',             date: '6 décembre 2025', ig: 'hinaupokodevezeoff' },
+  { y: 2025, name: 'Angélique Angarni-Filopon', region: 'Martinique',         date: '14 décembre 2024', ig: 'angeliqueaf_off' },
+  { y: 2024, name: 'Ève Gilles',                region: 'Nord-Pas-de-Calais', date: '16 décembre 2023', ig: 'evegillesoff' },
+  { y: 2023, name: 'Indira Ampiot',             region: 'Guadeloupe',         date: '17 décembre 2022', ig: 'indiraampiotoff' },
+  { y: 2022, name: 'Diane Leyre',               region: 'Île-de-France',      date: '11 décembre 2021', ig: 'dianeleyreoff' },
+  { y: 2021, name: 'Amandine Petit',            region: 'Normandie',          date: '19 décembre 2020', ig: 'amandinepetitoff' },
+  { y: 2020, name: 'Clémence Botino',           region: 'Guadeloupe',         date: '14 décembre 2019', ig: 'clemencebotinooff' },
   { y: 2019, name: 'Vaimalama Chaves',          region: 'Tahiti',             date: '15 décembre 2018' },
-  { y: 2018, name: 'Maëva Coucke',              region: 'Nord-Pas-de-Calais', date: '16 décembre 2017' },
-  { y: 2017, name: 'Alicia Aylies',             region: 'Guyane',             date: '17 décembre 2016' },
+  { y: 2018, name: 'Maëva Coucke',              region: 'Nord-Pas-de-Calais', date: '16 décembre 2017', ig: 'maevacoucke' },
+  { y: 2017, name: 'Alicia Aylies',             region: 'Guyane',             date: '17 décembre 2016', ig: 'aliciaaylies' },
   { y: 2016, name: 'Iris Mittenaere',           region: 'Nord-Pas-de-Calais', date: '19 décembre 2015', note: 'Élue ensuite Miss Univers 2016' },
   { y: 2015, name: 'Camille Cerf',              region: 'Nord-Pas-de-Calais', date: '6 décembre 2014' },
   { y: 2014, name: 'Flora Coquerel',            region: 'Centre-Val de Loire', date: '7 décembre 2013', note: 'Élue sous l\'écharpe de Miss Orléanais' },
@@ -1498,6 +1498,25 @@ function renderPalmares(el) {
       ${w.ig
         ? `<a class="btn btn-outline" style="margin-top:18px;text-decoration:none" href="https://www.instagram.com/${encodeURIComponent(w.ig)}/" target="_blank" rel="noopener">${ICON.insta} @${esc(w.ig)}</a>`
         : `<a class="btn btn-outline" style="margin-top:18px;text-decoration:none" href="https://www.google.com/search?q=${encodeURIComponent(w.name + ' Miss France ' + w.y + ' instagram')}" target="_blank" rel="noopener">${ICON.insta} Trouver son Instagram</a>`}
+    </div>
+    <div class="card">
+      <h3 class="awards-title">Les coulisses</h3>
+      <p class="center small muted" style="margin:-2px 0 14px">Backstage, répétitions, préparation des candidates et annonces officielles.</p>
+      <div class="stack">
+        <a class="btn btn-primary" style="text-decoration:none" href="https://www.instagram.com/missfranceoff/" target="_blank" rel="noopener">${ICON.insta} Miss France officiel · @missfranceoff</a>
+        <a class="btn btn-outline" style="text-decoration:none" href="https://www.tf1.fr/tf1/miss-france" target="_blank" rel="noopener">L'émission sur TF1+</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="awards-title">Ce que gagne Miss France</h3>
+      <p class="center small muted" style="margin:-2px 0 6px">Pendant son année de règne, selon la presse</p>
+      ${[
+        ['Un salaire', 'Environ 3 000 à 5 000 € net par mois selon les estimations (non officiel).'],
+        ['Un appartement à Paris', 'Logement de fonction dans le XVIIᵉ arrondissement, près de l\'Arc de Triomphe.'],
+        ['Une voiture', 'Offerte par le partenaire automobile de l\'année.'],
+        ['Les cadeaux des partenaires', 'Une dotation estimée entre 57 000 et 60 000 € : bijoux, mode, beauté, voyages…'],
+        ['La couronne et l\'écharpe', 'Créées par le joaillier partenaire ; la couronne change au fil des éditions.'],
+      ].map(([t, d]) => `<div class="tally"><span class="grow"><span class="serif" style="font-size:17px">${t}</span><div class="small muted">${d}</div></span></div>`).join('')}
     </div>
     <div class="card">
       <h3 class="awards-title">Les régions les plus titrées</h3>
