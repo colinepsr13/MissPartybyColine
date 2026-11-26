@@ -32,7 +32,7 @@ et noter ensemble vos Miss préférées.
 - **Salons privés** : crée un salon, donne-lui le nom que tu veux (renommable ensuite).
 - **Invitation par code** : chaque salon a un code à 6 caractères (ex. `K7PQ2M`) à partager par SMS,
   WhatsApp… via le bouton « Inviter ».
-- **Les 30 Miss régionales** déjà dans la liste. L'organisatrice peut ajouter le prénom et le nom
+- **Les 31 Miss régionales** déjà dans la liste. L'organisatrice peut ajouter le prénom et le nom
   de chaque candidate, la marquer éliminée et couronner la gagnante.
 - **Notation de 1 à 10** sur 4 critères :
   - 👗 Tenue

@@ -55,7 +55,7 @@ enum ShowPhase: String, CaseIterable, Identifiable, Codable {
     var title: String {
         switch self {
         case .avant: return "Avant le show"
-        case .defileRegional: return "Défilés des 30 Miss"
+        case .defileRegional: return "Défilés des 31 Miss"
         case .top15: return "Top 15"
         case .top5: return "Top 5"
         case .couronnement: return "Couronnement"
@@ -125,17 +125,17 @@ struct ChatMessage: Identifiable, Codable {
     var createdAt: Date
 }
 
-// MARK: - Liste des 30 régions
+// MARK: - Liste des 31 régions
 
 enum CandidateCatalog {
-    /// Les 30 régions représentées à l'élection de Miss France.
+    /// Les 31 régions représentées à l'élection de Miss France.
     /// Les noms des candidates peuvent être ajoutés dans l'app par l'organisatrice du salon
     /// dès qu'ils sont connus.
     static let regions: [String] = [
         "Alsace", "Aquitaine", "Auvergne", "Bourgogne", "Bretagne",
         "Centre-Val de Loire", "Champagne-Ardenne", "Corse", "Côte d'Azur", "Franche-Comté",
         "Guadeloupe", "Guyane", "Île-de-France", "Languedoc", "Limousin",
-        "Lorraine", "Martinique", "Mayotte", "Nord-Pas-de-Calais", "Normandie",
+        "Lorraine", "Martinique", "Mayotte", "Midi-Pyrénées", "Nord-Pas-de-Calais", "Normandie",
         "Nouvelle-Calédonie", "Pays de la Loire", "Picardie", "Poitou-Charentes", "Provence",
         "Réunion", "Rhône-Alpes", "Roussillon", "Saint-Martin & Saint-Barthélemy", "Tahiti"
     ]

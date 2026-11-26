@@ -285,7 +285,7 @@ const CRITERIA = [
 ];
 const PHASES = [
   { k: 'avant',   t: 'Avant le show',        e: '🍿' },
-  { k: 'defiles', t: 'Défilés des 30 Miss',  e: '✨' },
+  { k: 'defiles', t: 'Défilés des 31 Miss',  e: '✨' },
   { k: 'top15',   t: 'Top 15',               e: '🔥' },
   { k: 'top5',    t: 'Top 5',                e: '😱' },
   { k: 'couronnement', t: 'Couronnement',   e: '👑' },
@@ -295,7 +295,7 @@ const REGIONS = [
   'Alsace', 'Aquitaine', 'Auvergne', 'Bourgogne', 'Bretagne',
   'Centre-Val de Loire', 'Champagne-Ardenne', 'Corse', "Côte d'Azur", 'Franche-Comté',
   'Guadeloupe', 'Guyane', 'Île-de-France', 'Languedoc', 'Limousin',
-  'Lorraine', 'Martinique', 'Mayotte', 'Nord-Pas-de-Calais', 'Normandie',
+  'Lorraine', 'Martinique', 'Mayotte', 'Midi-Pyrénées', 'Nord-Pas-de-Calais', 'Normandie',
   'Nouvelle-Calédonie', 'Pays de la Loire', 'Picardie', 'Poitou-Charentes', 'Provence',
   'Réunion', 'Rhône-Alpes', 'Roussillon', 'Saint-Martin & Saint-Barthélemy', 'Tahiti',
 ];
@@ -703,7 +703,7 @@ class RoomSession {
   }
   candidate(ci) {
     const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null, pl: {} };
-    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || null, place: (m.pl && m.pl[n]) || (m.crown === n ? 1 : 0) };
+    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n, photo: this.photos[n] || `miss/${String(n).padStart(2, '0')}.jpg`, place: (m.pl && m.pl[n]) || (m.crown === n ? 1 : 0) };
   }
 }
 
@@ -1468,8 +1468,8 @@ function renderRatingBody() {
     ${s.isHost ? `
       <div class="host-box stack">
         <div class="eyebrow center">Réservé à l'organisatrice</div>
-        <button class="btn btn-soft" id="set-photo">${c.photo ? 'Changer la photo' : 'Ajouter une photo'}</button>
-        ${c.photo ? '<button class="btn-text" id="del-photo">Retirer la photo</button>' : ''}
+        <button class="btn btn-soft" id="set-photo">Changer la photo</button>
+        ${s.photos[c.n] ? '<button class="btn-text" id="del-photo">Revenir à la photo officielle</button>' : ''}
         <button class="btn btn-soft" id="set-name">${c.name ? 'Modifier le nom' : 'Ajouter son prénom et nom'}</button>
         <label class="setting" style="border-top:0"><span>Résultat officiel</span>
           <select id="placement">${PLACES.map((t, i) => `<option value="${i}" ${i === c.place ? 'selected' : ''}>${i ? t : '—'}</option>`).join('')}</select>
