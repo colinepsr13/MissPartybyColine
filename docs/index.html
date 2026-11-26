@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Miss Party">
+<meta name="theme-color" content="#100f33">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<title>Miss Party 2027</title>
+<style>
+:root {
+  --gold: #dbb054;
+  --gold-light: #fae09e;
+  --rose: #ee5e91;
+  --navy: #100f33;
+  --night: #211445;
+  --plum: #401440;
+  --card: rgba(255,255,255,.08);
+  --card-strong: rgba(255,255,255,.13);
+  --text: #fff;
+  --muted: rgba(255,255,255,.65);
+  --gold-grad: linear-gradient(135deg, var(--gold-light), var(--gold));
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body {
+  font: 16px/1.4 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--navy), var(--night) 55%, var(--plum)) fixed;
+  background-color: var(--navy);
+  overscroll-behavior: none;
+}
+button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; padding: 0; }
+input, select { font: inherit; font-size: 16px; color: var(--text); }
+.hidden { display: none !important; }
+.serif { font-family: "New York", "Iowan Old Style", Georgia, serif; }
+.gold-text { background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.tiny { font-size: 11px; }
+.center { text-align: center; }
+
+/* ---------- Écrans simples ---------- */
+.screen { min-height: 100%; padding: calc(var(--safe-top) + 24px) 20px calc(var(--safe-bottom) + 28px); max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.crown-title { text-align: center; margin-top: 8px; }
+.crown-title .crown { font-size: 54px; line-height: 1; }
+.crown-title h1 { margin: 6px 0 0; font-size: 34px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px 16px; border-radius: 16px; font-weight: 700; font-size: 17px; }
+.btn:active { transform: scale(.98); opacity: .85; }
+.btn-gold { background: var(--gold-grad); color: var(--navy); }
+.btn-outline { border: 1.5px solid var(--gold); color: var(--gold-light); }
+.btn-ghost { background: var(--card); }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+.card { background: var(--card); border-radius: 18px; padding: 16px; }
+.field { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.07); outline: none; }
+.field:focus { border-color: var(--gold); }
+.code-field { text-align: center; font: 800 32px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 6px; text-transform: uppercase; }
+.label { font-size: 14px; color: var(--gold-light); margin-bottom: 6px; display: block; }
+.error { color: var(--rose); font-size: 14px; text-align: center; }
+.section-title { font-weight: 700; color: var(--gold-light); margin: 6px 0 -6px; }
+.room-row { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; }
+.room-row .bubble { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; background: rgba(219,176,84,.2); flex: none; }
+.room-row .grow { flex: 1; min-width: 0; }
+.room-row b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chev { color: var(--gold); font-size: 22px; }
+.install-hint { border: 1px dashed rgba(250,224,158,.5); background: rgba(219,176,84,.08); }
+.link-btn { color: var(--gold-light); text-decoration: underline; font-size: 14px; }
+
+/* ---------- Salon ---------- */
+.room { position: fixed; inset: 0; display: flex; flex-direction: column; max-width: 680px; margin: 0 auto; }
+.topbar { padding: calc(var(--safe-top) + 8px) 12px 8px; display: flex; align-items: center; gap: 8px; background: rgba(16,15,51,.92); }
+.topbar .back { font-size: 30px; line-height: 1; color: var(--gold); width: 36px; height: 36px; }
+.topbar .title { flex: 1; font-weight: 700; font-size: 17px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 800; width: 76px; justify-content: flex-end; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); }
+.live.off .dot { background: #f3a43b; }
+.live.off { color: #f3a43b; }
+.live.on { color: var(--rose); }
+.live.on .dot { animation: pulse 1.6s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+.phase { display: flex; align-items: center; gap: 8px; padding: 9px 16px; background: rgba(219,176,84,.15); font-weight: 600; font-size: 15px; }
+.phase .sync { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--muted); }
+.main { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 14px 14px 20px; }
+.tabbar { display: flex; background: rgba(16,15,51,.96); border-top: 1px solid rgba(255,255,255,.08); padding-bottom: var(--safe-bottom); }
+.tabbar button { flex: 1; padding: 8px 0 6px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: var(--muted); }
+.tabbar button .ico { font-size: 21px; filter: grayscale(1); opacity: .7; }
+.tabbar button.active { color: var(--gold-light); }
+.tabbar button.active .ico { filter: none; opacity: 1; }
+.tabbar .badge { position: absolute; margin-left: 22px; margin-top: -2px; background: var(--rose); color: #fff; border-radius: 9px; font-size: 10px; padding: 0 5px; font-weight: 800; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+
+.progress { height: 6px; border-radius: 3px; background: rgba(255,255,255,.1); overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--gold-grad); border-radius: 3px; transition: width .3s; }
+.search { display: flex; align-items: center; gap: 8px; background: var(--card); border-radius: 12px; padding: 0 12px; }
+.search input { flex: 1; background: none; border: 0; outline: none; padding: 11px 0; }
+.toggle { font-size: 13px; padding: 6px 10px; border-radius: 10px; background: var(--card); color: var(--gold-light); white-space: nowrap; }
+.toggle.on { background: var(--gold-grad); color: var(--navy); font-weight: 700; }
+
+.cand { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; background: var(--card); border-radius: 16px; padding: 11px 12px; }
+.cand:active { background: var(--card-strong); }
+.num { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; color: var(--navy); background: var(--gold-light); flex: none; font-variant-numeric: tabular-nums; }
+.cand.elim .num { opacity: .35; }
+.cand.crowned .num, .num.crowned { background: var(--gold-grad); box-shadow: 0 0 0 2px var(--rose); }
+.cand .info { flex: 1; min-width: 0; }
+.cand .info b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cand.elim .info { opacity: .55; }
+.cand.elim .info b { text-decoration: line-through; }
+.crit-dots { font-size: 12px; letter-spacing: 2px; margin-top: 2px; }
+.crit-dots .off { opacity: .22; }
+.cand .score { text-align: right; flex: none; }
+.cand .score .big { font-weight: 800; font-size: 20px; color: var(--gold-light); font-variant-numeric: tabular-nums; }
+.todo { color: var(--rose); font-weight: 700; font-size: 13px; }
+
+.seg { display: flex; background: var(--card); border-radius: 10px; padding: 3px; }
+.seg button { flex: 1; padding: 7px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--muted); }
+.seg button.active { background: var(--card-strong); color: #fff; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; padding: 8px 14px; border-radius: 20px; background: var(--card); font-weight: 600; font-size: 14px; }
+.chip.active { background: var(--gold-grad); color: var(--navy); }
+.award { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+.award .e { font-size: 22px; width: 28px; text-align: center; }
+.award .grow { flex: 1; min-width: 0; }
+.award .grow b { display: block; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.award .val { font-weight: 800; color: var(--gold-light); font-variant-numeric: tabular-nums; }
+.rank { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 16px; padding: 11px 12px; width: 100%; text-align: left; }
+.rank.top { background: rgba(219,176,84,.16); }
+.rank .pos { width: 34px; text-align: center; font-size: 24px; flex: none; }
+.rank .pos.n { font-size: 16px; font-weight: 700; color: var(--muted); }
+.rank .grow { flex: 1; min-width: 0; }
+.rank .grow b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rank.elim { opacity: .6; }
+.rank.elim .grow b { text-decoration: line-through; }
+.bar { height: 6px; background: rgba(255,255,255,.1); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--gold-grad); }
+.rank .val { text-align: right; flex: none; }
+.rank .val .big { font-weight: 800; font-size: 19px; color: var(--gold-light); font-variant-numeric: tabular-nums; }
+.empty { text-align: center; padding: 30px 16px; color: var(--muted); }
+.empty .e { font-size: 40px; }
+
+/* Chat */
+.msgs { display: flex; flex-direction: column; gap: 8px; }
+.msg { max-width: 80%; align-self: flex-start; }
+.msg.me { align-self: flex-end; text-align: right; }
+.msg .who { font-size: 11px; font-weight: 800; color: var(--rose); margin: 0 0 2px 4px; }
+.msg .txt { display: inline-block; padding: 8px 12px; border-radius: 18px; background: var(--card-strong); white-space: pre-wrap; word-wrap: break-word; text-align: left; }
+.msg.me .txt { background: var(--gold-grad); color: var(--navy); }
+.msg.emoji .txt { background: none !important; font-size: 38px; padding: 0 2px; line-height: 1.15; }
+.msg .time { font-size: 10px; color: rgba(255,255,255,.4); margin: 2px 4px 0; }
+.msg.pending { opacity: .5; }
+.chatbar { padding: 6px 10px 8px; background: rgba(16,15,51,.92); border-top: 1px solid rgba(255,255,255,.06); }
+.reacts { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.reacts::-webkit-scrollbar { display: none; }
+.reacts button { flex: none; font-size: 24px; width: 42px; height: 42px; border-radius: 50%; background: var(--card); }
+.compose { display: flex; gap: 8px; align-items: center; }
+.compose input { flex: 1; padding: 11px 16px; border-radius: 22px; border: 0; background: var(--card-strong); outline: none; }
+.send { width: 44px; height: 44px; border-radius: 50%; background: var(--gold-grad); color: var(--navy); font-size: 18px; font-weight: 900; flex: none; }
+
+/* Salon */
+.invite { text-align: center; }
+.invite .code { font: 900 44px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: 7px; margin: 4px 0 14px; user-select: all; -webkit-user-select: all; }
+.list-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.list-item:last-child { border-bottom: 0; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--gold-grad); color: var(--navy); display: grid; place-items: center; font-weight: 800; flex: none; }
+.setting { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.07); text-align: left; }
+.setting:last-child { border-bottom: 0; }
+.setting select { background: var(--card-strong); border: 0; border-radius: 10px; padding: 8px 10px; max-width: 60%; }
+.host-tag { color: var(--rose); font-weight: 800; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.danger { color: #ff7a7a; }
+
+/* Feuille de notation */
+.sheet-bg { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; background: linear-gradient(180deg, #1c1647, #2a1240); border-radius: 22px 22px 0 0; padding: 10px 16px calc(var(--safe-bottom) + 18px); animation: up .22s ease-out; }
+@keyframes up { from { transform: translateY(40px); opacity: .4; } }
+.grabber { width: 40px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.25); margin: 0 auto 8px; }
+.sheet-head { text-align: center; padding: 4px 0 12px; }
+.sheet-head .pill { display: inline-block; background: var(--gold-grad); color: var(--navy); font-weight: 800; font-size: 12px; padding: 3px 10px; border-radius: 10px; }
+.sheet-head h2 { margin: 6px 0 2px; font-size: 28px; }
+.sheet-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.sheet-nav button { color: var(--gold-light); font-weight: 600; padding: 6px 4px; }
+.sheet-nav button[disabled] { opacity: .3; }
+.crit-card { background: var(--card); border-radius: 16px; padding: 12px; margin-bottom: 10px; }
+.crit-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+.crit-head b { font-size: 17px; }
+.scores { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.scores button { height: 38px; border-radius: 9px; background: rgba(255,255,255,.08); font-weight: 800; font-size: 15px; color: rgba(255,255,255,.85); }
+.scores button.on { background: var(--gold-grad); color: var(--navy); }
+.scores button.sel { box-shadow: inset 0 0 0 2px var(--rose); }
+.toast { position: fixed; left: 50%; bottom: calc(var(--safe-bottom) + 90px); transform: translateX(-50%); background: rgba(0,0,0,.85); padding: 10px 16px; border-radius: 20px; font-size: 14px; z-index: 40; max-width: 90%; text-align: center; }
+.spinner { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="sheet-root"></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+"use strict";
+
+/* ================== Configuration ================== */
+const params = new URLSearchParams(location.search);
+// Serveur de synchronisation (ntfy.sh, gratuit et sans compte). Modifiable avec ?server=...
+const NTFY = (params.get('server') || 'https://ntfy.sh').replace(/\/+$/, '');
+const TOPIC_PREFIX = 'missparty27-';
+const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CODE_LEN = 6;
+
+const CRITERIA = [
+  { k: 'tenue',      t: 'Tenue',      e: '👗', a: 'Meilleure tenue' },
+  { k: 'maquillage', t: 'Maquillage', e: '💄', a: 'Meilleur maquillage' },
+  { k: 'danse',      t: 'Danse',      e: '💃', a: 'Meilleure danse' },
+  { k: 'discours',   t: 'Discours',   e: '🎤', a: 'Meilleur discours' },
+];
+const PHASES = [
+  { k: 'avant',   t: 'Avant le show',        e: '🍿' },
+  { k: 'defiles', t: 'Défilés des 30 Miss',  e: '✨' },
+  { k: 'top15',   t: 'Top 15',               e: '🔥' },
+  { k: 'top5',    t: 'Top 5',                e: '😱' },
+  { k: 'couronnement', t: 'Couronnement',   e: '👑' },
+  { k: 'fini',    t: "C'est fini !",         e: '🎉' },
+];
+const REGIONS = [
+  'Alsace', 'Aquitaine', 'Auvergne', 'Bourgogne', 'Bretagne',
+  'Centre-Val de Loire', 'Champagne-Ardenne', 'Corse', "Côte d'Azur", 'Franche-Comté',
+  'Guadeloupe', 'Guyane', 'Île-de-France', 'Languedoc', 'Limousin',
+  'Lorraine', 'Martinique', 'Mayotte', 'Nord-Pas-de-Calais', 'Normandie',
+  'Nouvelle-Calédonie', 'Pays de la Loire', 'Picardie', 'Poitou-Charentes', 'Provence',
+  'Réunion', 'Rhône-Alpes', 'Roussillon', 'Saint-Martin & Saint-Barthélemy', 'Tahiti',
+];
+const REACTIONS = ['😍', '👑', '🔥', '😱', '👏', '😂', '💅', '😭', '🤩', '👀'];
+const NC = REGIONS.length, NK = CRITERIA.length;
+const EMPTY_VOTES = '0'.repeat(NC * NK);
+
+/* ================== Utilitaires ================== */
+const $ = (sel, root = document) => root.querySelector(sel);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const clampStr = (s, n) => (typeof s === 'string' ? s.trim().slice(0, n) : '');
+const fmt = x => x.toFixed(1).replace('.', ',');
+const randFrom = (alpha, n) => { const a = new Uint32Array(n); crypto.getRandomValues(a); return Array.from(a, x => alpha[x % alpha.length]).join(''); };
+const normCode = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, CODE_LEN);
+const isValidCode = c => c.length === CODE_LEN && [...c].every(ch => CODE_ALPHABET.includes(ch));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const encScore = n => (n >= 10 ? 'a' : String(n));
+const decScore = ch => (ch === 'a' ? 10 : (ch >= '1' && ch <= '9' ? +ch : 0));
+const normVotes = v => (typeof v === 'string' && /^[0-9a]*$/.test(v)) ? (v + EMPTY_VOTES).slice(0, NC * NK) : EMPTY_VOTES;
+const phaseOf = k => PHASES.find(p => p.k === k) || PHASES[0];
+const plural = (n, w) => `${n} ${w}${n > 1 ? 's' : ''}`;
+const isStandalone = () => window.navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+function haptic() { try { navigator.vibrate && navigator.vibrate(8); } catch {} }
+
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.add('hidden'), 2600);
+}
+
+/* ================== Identité locale ================== */
+let uid = store.get('mp_uid', null);
+if (!uid) { uid = randFrom('abcdefghijklmnopqrstuvwxyz0123456789', 14); store.set('mp_uid', uid); }
+let pseudo = store.get('mp_pseudo', '');
+let myRooms = store.get('mp_rooms', []); // [{code, name, t}]
+function rememberRoom(code, name) {
+  myRooms = myRooms.filter(r => r.code !== code);
+  myRooms.unshift({ code, name: name || 'Salon', t: Date.now() });
+  myRooms = myRooms.slice(0, 20);
+  store.set('mp_rooms', myRooms);
+}
+function forgetRoom(code) {
+  myRooms = myRooms.filter(r => r.code !== code);
+  store.set('mp_rooms', myRooms);
+  try { localStorage.removeItem('mp_local_' + code); } catch {}
+}
+
+/* ================== Synchronisation (ntfy.sh) ==================
+   Chaque salon = un "topic" ntfy. Chaque action publie un petit message JSON :
+   - {k:'room'} : état du salon (nom, étape, noms des candidates, éliminées, gagnante) — publié par l'organisatrice
+   - {k:'user'} : pseudo + toutes les notes d'une participante (une seule chaîne compacte)
+   - {k:'chat'} : un message du chat
+   Le dernier état (numéro de séquence s le plus grand) de chaque personne fait foi. */
+class RoomSession {
+  constructor(code) {
+    this.code = code;
+    this.topic = TOPIC_PREFIX + code;
+    this.seen = new Set();
+    this.lastId = null;
+    this.meta = null;
+    this.users = {};
+    this.chat = [];
+    this.es = null;
+    this.live = false;
+    this.lastEvent = 0;
+    this.pendingMeta = false;
+    this.pendingUser = false;
+    this.chatQueue = [];
+    this.timer = null;
+    this.flushing = false;
+    this.syncError = false;
+    this.myLastTime = 0;
+    this.metaLastTime = 0;
+    this.onchange = () => {};
+    this.local = Object.assign({ seq: 0, votes: EMPTY_VOTES, metaSeq: 0 }, store.get('mp_local_' + code, {}));
+    this.local.votes = normVotes(this.local.votes);
+    if (this.local.seq > 0) this.users[uid] = { n: pseudo, v: this.local.votes, s: this.local.seq, t: 0 };
+  }
+
+  save() { store.set('mp_local_' + this.code, this.local); }
+  get isHost() { return !!this.meta && this.meta.h === uid; }
+
+  async loadHistory() {
+    const r = await fetch(`${NTFY}/${this.topic}/json?poll=1&since=all`, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const text = await r.text();
+    for (const line of text.split('\n')) {
+      if (!line.trim()) continue;
+      try { this.handle(JSON.parse(line)); } catch {}
+    }
+    this.save();
+  }
+
+  handle(ev) {
+    if (!ev || ev.event !== 'message' || !ev.id || this.seen.has(ev.id)) return false;
+    this.seen.add(ev.id);
+    this.lastId = ev.id;
+    let d;
+    try { d = JSON.parse(ev.message); } catch { return false; }
+    if (!d || typeof d !== 'object' || typeof d.u !== 'string') return false;
+    const t = ev.time || 0;
+    const s = Number.isFinite(d.s) ? d.s : 0;
+
+    if (d.k === 'room') {
+      const host = this.meta ? this.meta.h : d.u;
+      if (d.u !== host) return false;           // seule l'organisatrice peut modifier le salon
+      if (d.u === uid) {
+        this.metaLastTime = Math.max(this.metaLastTime, t);
+        if (s <= this.local.metaSeq && this.meta) return true; // modification locale plus récente
+        this.local.metaSeq = Math.max(this.local.metaSeq, s);
+      }
+      if (this.meta && s < this.meta.s) return true;
+      const names = {};
+      if (d.c && typeof d.c === 'object') for (const [k, v] of Object.entries(d.c)) { const n = +k; if (n >= 1 && n <= NC) { const nm = clampStr(v, 40); if (nm) names[n] = nm; } }
+      this.meta = {
+        h: host, s,
+        name: clampStr(d.n, 60) || 'Soirée Miss France 2027',
+        phase: phaseOf(d.p).k,
+        names,
+        elim: Array.isArray(d.e) ? d.e.filter(n => Number.isInteger(n) && n >= 1 && n <= NC) : [],
+        crown: Number.isInteger(d.w) && d.w >= 1 && d.w <= NC ? d.w : null,
+      };
+      return true;
+    }
+    if (d.k === 'user') {
+      if (d.u === uid) {
+        this.myLastTime = Math.max(this.myLastTime, t);
+        if (s <= this.local.seq) return true;    // nos notes locales sont plus récentes
+        this.local.seq = s;
+        this.local.votes = normVotes(d.v);       // reprise des notes (ex. autre appareil)
+      }
+      const cur = this.users[d.u];
+      if (cur && s < cur.s) return true;
+      this.users[d.u] = { n: clampStr(d.n, 30) || 'Copine', v: normVotes(d.v), s, t };
+      return true;
+    }
+    if (d.k === 'chat') {
+      const x = clampStr(d.x, 500);
+      if (!x) return false;
+      this.chat.push({ id: ev.id, u: d.u, n: clampStr(d.n, 30) || 'Copine', x, t });
+      if (this.chat.length > 400) this.chat.splice(0, this.chat.length - 400);
+      if (d.u === uid) this.chatQueue = this.chatQueue.filter(m => m.cid !== d.cid);
+      return true;
+    }
+    return false;
+  }
+
+  connect() {
+    this.disconnect();
+    const since = this.lastId || 'all';
+    let es;
+    try { es = new EventSource(`${NTFY}/${this.topic}/sse?since=${encodeURIComponent(since)}`); }
+    catch { this.scheduleReconnect(); return; }
+    this.es = es;
+    const alive = () => { this.lastEvent = Date.now(); if (!this.live) { this.live = true; this.onchange(); } };
+    es.onopen = alive;
+    es.addEventListener('open', alive);
+    es.addEventListener('keepalive', alive);
+    es.onmessage = e => {
+      alive();
+      try { if (this.handle(JSON.parse(e.data))) { this.save(); this.onchange(); } } catch {}
+    };
+    es.onerror = () => {
+      if (this.es !== es) return;
+      es.close();
+      this.es = null;
+      this.live = false;
+      this.onchange();
+      this.scheduleReconnect();
+    };
+    if (!this.watchdog) {
+      this.watchdog = setInterval(() => {
+        if (document.visibilityState !== 'visible') return;
+        if (!this.es || Date.now() - this.lastEvent > 80000) this.connect();
+      }, 15000);
+    }
+    this.lastEvent = Date.now();
+  }
+  scheduleReconnect() {
+    clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = setTimeout(() => this.connect(), 4000);
+  }
+  disconnect() {
+    clearTimeout(this.reconnectTimer);
+    if (this.es) { const es = this.es; this.es = null; es.close(); }
+    this.live = false;
+  }
+  close() {
+    this.flush();
+    this.disconnect();
+    clearInterval(this.watchdog);
+    this.watchdog = null;
+    this.onchange = () => {};
+  }
+
+  async post(obj) {
+    const body = JSON.stringify(obj);
+    const r = await fetch(`${NTFY}/${this.topic}`, { method: 'POST', body, keepalive: true });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+  }
+  metaPayload() {
+    const m = this.meta;
+    return { k: 'room', u: uid, s: m.s, n: m.name, p: m.phase, c: m.names, e: m.elim, w: m.crown };
+  }
+  userPayload() {
+    return { k: 'user', u: uid, s: this.local.seq, n: pseudo, v: this.local.votes };
+  }
+  schedule(delay) {
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => this.flush(), delay);
+  }
+  get hasPending() { return this.pendingMeta || this.pendingUser || this.chatQueue.length > 0; }
+
+  async flush() {
+    clearTimeout(this.timer);
+    this.timer = null;
+    if (this.flushing || !this.hasPending) return;
+    this.flushing = true;
+    try {
+      if (this.pendingMeta && this.isHost) {
+        this.pendingMeta = false;
+        try { await this.post(this.metaPayload()); } catch (e) { this.pendingMeta = true; throw e; }
+      }
+      if (this.pendingUser) {
+        this.pendingUser = false;
+        try { await this.post(this.userPayload()); } catch (e) { this.pendingUser = true; throw e; }
+      }
+      while (this.chatQueue.length) {
+        const m = this.chatQueue[0];
+        if (!m.sent) { await this.post({ k: 'chat', u: uid, n: pseudo, x: m.x, cid: m.cid }); m.sent = true; }
+        if (this.chatQueue[0] === m) this.chatQueue.shift();
+      }
+      this.syncError = false;
+    } catch {
+      this.syncError = true;
+      this.schedule(15000); // le serveur limite le débit : on réessaie un peu plus tard
+    } finally {
+      this.flushing = false;
+      this.onchange();
+    }
+  }
+
+  /* ---- Actions ---- */
+  setScore(ci, ki, value) {
+    const i = ci * NK + ki;
+    const v = this.local.votes;
+    this.local.votes = v.slice(0, i) + encScore(value) + v.slice(i + 1);
+    this.touchUser();
+    this.schedule(5000); // regroupe plusieurs notes dans un seul envoi
+  }
+  touchUser() {
+    this.local.seq += 1;
+    this.users[uid] = { n: pseudo, v: this.local.votes, s: this.local.seq, t: Date.now() / 1000 };
+    this.pendingUser = true;
+    this.save();
+    this.onchange();
+  }
+  updateMeta(patch) {
+    if (!this.isHost) return;
+    this.local.metaSeq += 1;
+    this.meta = Object.assign({}, this.meta, patch, { s: this.local.metaSeq });
+    this.pendingMeta = true;
+    this.save();
+    this.onchange();
+    this.schedule(1500);
+  }
+  sendChat(text) {
+    const x = clampStr(text, 500);
+    if (!x) return;
+    this.chatQueue.push({ x, cid: randFrom('abcdefghijklmnopqrstuvwxyz0123456789', 8), t: Date.now() / 1000 });
+    this.onchange();
+    this.flush();
+  }
+
+  /* ---- Calculs ---- */
+  score(u, ci, ki) { const usr = this.users[u]; return usr ? decScore(usr.v[ci * NK + ki]) : 0; }
+  average(ci, ki, onlyUid) {
+    let sum = 0, n = 0;
+    for (const u of Object.keys(this.users)) {
+      if (onlyUid && u !== onlyUid) continue;
+      const x = this.score(u, ci, ki);
+      if (x) { sum += x; n++; }
+    }
+    return n ? { v: sum / n, n } : null;
+  }
+  overall(ci, onlyUid) {
+    const parts = CRITERIA.map((_, k) => this.average(ci, k, onlyUid)).filter(Boolean);
+    if (!parts.length) return null;
+    let voters = 0;
+    for (const u of Object.keys(this.users)) {
+      if (onlyUid && u !== onlyUid) continue;
+      if (CRITERIA.some((_, k) => this.score(u, ci, k))) voters++;
+    }
+    return { v: parts.reduce((a, p) => a + p.v, 0) / parts.length, n: voters };
+  }
+  ranking(ki, onlyUid) {
+    const out = [];
+    for (let ci = 0; ci < NC; ci++) {
+      const r = ki < 0 ? this.overall(ci, onlyUid) : this.average(ci, ki, onlyUid);
+      if (r) out.push({ ci, v: r.v, n: r.n });
+    }
+    return out.sort((a, b) => b.v - a.v || a.ci - b.ci);
+  }
+  ratedCount(u) {
+    let c = 0;
+    for (let ci = 0; ci < NC; ci++) if (CRITERIA.some((_, k) => this.score(u, ci, k))) c++;
+    return c;
+  }
+  candidate(ci) {
+    const n = ci + 1, m = this.meta || { names: {}, elim: [], crown: null };
+    return { ci, n, title: 'Miss ' + REGIONS[ci], name: m.names[n] || '', elim: m.elim.includes(n), crown: m.crown === n };
+  }
+}
+
+/* ================== Navigation ================== */
+let session = null;
+const ui = { tab: 'cand', search: '', hideElim: false, rankScope: 'group', rankCrit: -1, sheetCi: null, chatSeen: 0 };
+
+function go(view, arg) {
+  if (session && view !== 'room') { session.close(); session = null; }
+  closeSheet();
+  if (view === 'home') renderHome();
+  else if (view === 'pseudo') renderPseudo(arg);
+  else if (view === 'room') openRoom(arg);
+}
+
+/* ---------- Pseudo ---------- */
+function renderPseudo(next) {
+  $('#app').innerHTML = `
+    <div class="screen">
+      <div style="flex:1"></div>
+      <div class="crown-title"><div class="crown">👑</div><h1 class="serif gold-text">Miss Party 2027</h1></div>
+      <p class="center muted">Regarde l'élection de Miss France avec tes copines, même à distance, et notez vos Miss préférées&nbsp;!</p>
+      <div>
+        <label class="label" for="pseudo">Ton pseudo</label>
+        <input id="pseudo" class="field" maxlength="30" placeholder="Ex : Coline" autocomplete="nickname" value="${esc(pseudo)}">
+      </div>
+      <button id="go" class="btn btn-gold">C'est parti ✨</button>
+      <div style="flex:1"></div>
+    </div>`;
+  const input = $('#pseudo'), btn = $('#go');
+  const upd = () => { btn.disabled = !input.value.trim(); };
+  upd();
+  input.addEventListener('input', upd);
+  const save = () => {
+    const v = clampStr(input.value, 30);
+    if (!v) return;
+    pseudo = v;
+    store.set('mp_pseudo', pseudo);
+    next ? next() : go('home');
+  };
+  btn.onclick = save;
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') save(); });
+  setTimeout(() => input.focus(), 50);
+}
+
+/* ---------- Accueil ---------- */
+function renderHome() {
+  const rooms = myRooms.map(r => `
+    <button class="card room-row" data-code="${esc(r.code)}">
+      <span class="bubble">👑</span>
+      <span class="grow"><b>${esc(r.name)}</b><span class="small muted">Code ${esc(r.code)}</span></span>
+      <span class="chev">›</span>
+    </button>`).join('');
+  const hint = isStandalone() ? '' : `
+    <div class="card install-hint small">
+      <b>📲 Installe l'app sur ton iPhone</b><br>
+      Dans Safari, touche <b>Partager</b> <span style="font-size:15px">⬆️</span> puis <b>« Sur l'écran d'accueil »</b>.
+      Ouvre ensuite Miss Party depuis son icône.
+    </div>`;
+  $('#app').innerHTML = `
+    <div class="screen">
+      <div class="crown-title"><div class="crown">👑</div><h1 class="serif gold-text">Miss Party 2027</h1></div>
+      <p class="center" style="margin:0;font-weight:600;font-size:18px">Coucou ${esc(pseudo)} 💖 <button class="link-btn" id="edit-pseudo">modifier</button></p>
+      <button class="btn btn-gold" id="create">✨ Créer un salon</button>
+      <button class="btn btn-outline" id="join">👭 Rejoindre avec un code</button>
+      ${hint}
+      <div class="section-title">Mes salons</div>
+      ${rooms || '<div class="card small muted">Aucun salon pour l\'instant. Crée le tien et envoie le code à tes copines&nbsp;!</div>'}
+    </div>`;
+  $('#create').onclick = openCreateSheet;
+  $('#join').onclick = () => openJoinSheet('');
+  $('#edit-pseudo').onclick = () => go('pseudo');
+  $('#app').querySelectorAll('[data-code]').forEach(b => b.onclick = () => go('room', { code: b.dataset.code }));
+}
+
+function sheetShell(inner) {
+  const root = $('#sheet-root');
+  root.innerHTML = `<div class="sheet-bg"><div class="sheet" role="dialog"><div class="grabber"></div>${inner}</div></div>`;
+  const bg = root.firstElementChild;
+  bg.addEventListener('click', e => { if (e.target === bg) closeSheet(); });
+  return bg.firstElementChild;
+}
+function closeSheet() { $('#sheet-root').innerHTML = ''; ui.sheetCi = null; }
+
+function openCreateSheet() {
+  const sh = sheetShell(`
+    <div class="stack" style="padding:6px 4px 10px">
+      <h2 class="serif gold-text center" style="margin:4px 0">Nouveau salon</h2>
+      <p class="center muted small" style="margin:0">Donne un nom à ton salon, puis envoie le code à tes copines.</p>
+      <input id="room-name" class="field" maxlength="60" value="Soirée Miss France 2027">
+      <div id="err" class="error"></div>
+      <button id="ok" class="btn btn-gold">Créer le salon 👑</button>
+      <button id="cancel" class="btn btn-ghost">Annuler</button>
+    </div>`);
+  $('#cancel', sh).onclick = closeSheet;
+  $('#ok', sh).onclick = async () => {
+    const btn = $('#ok', sh);
+    btn.disabled = true; btn.textContent = 'Création…';
+    try {
+      const code = await createRoom(clampStr($('#room-name', sh).value, 60) || 'Soirée Miss France 2027');
+      closeSheet();
+      go('room', { code, fresh: true });
+    } catch (e) {
+      $('#err', sh).textContent = 'Impossible de créer le salon. Vérifie ta connexion internet et réessaie.';
+      btn.disabled = false; btn.textContent = 'Créer le salon 👑';
+    }
+  };
+}
+
+async function createRoom(name) {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const code = randFrom(CODE_ALPHABET, CODE_LEN);
+    const s = new RoomSession(code);
+    await s.loadHistory();
+    if (s.seen.size) continue; // code déjà utilisé
+    s.local = { seq: 1, votes: EMPTY_VOTES, metaSeq: 1 };
+    s.meta = { h: uid, s: 1, name, phase: 'avant', names: {}, elim: [], crown: null };
+    await s.post(s.metaPayload());
+    await s.post(s.userPayload());
+    s.save();
+    rememberRoom(code, name);
+    return code;
+  }
+  throw new Error('no code');
+}
+
+function openJoinSheet(prefill) {
+  const sh = sheetShell(`
+    <div class="stack" style="padding:6px 4px 10px">
+      <h2 class="serif gold-text center" style="margin:4px 0">Rejoindre un salon</h2>
+      <p class="center muted small" style="margin:0">Entre le code à 6 caractères que ta copine t'a envoyé.</p>
+      <input id="code" class="field code-field" maxlength="8" placeholder="ABC123" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(normCode(prefill))}">
+      <div id="err" class="error"></div>
+      <button id="ok" class="btn btn-gold">Rejoindre ✨</button>
+      <button id="cancel" class="btn btn-ghost">Annuler</button>
+    </div>`);
+  const input = $('#code', sh), btn = $('#ok', sh);
+  const upd = () => { const c = normCode(input.value); if (input.value !== c) input.value = c; btn.disabled = !isValidCode(c); };
+  upd();
+  input.addEventListener('input', upd);
+  $('#cancel', sh).onclick = closeSheet;
+  const submit = () => { const c = normCode(input.value); if (isValidCode(c)) { closeSheet(); go('room', { code: c, joining: true }); } };
+  btn.onclick = submit;
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+  setTimeout(() => input.focus(), 80);
+}
+
+/* ---------- Salon ---------- */
+async function openRoom({ code, joining }) {
+  $('#app').innerHTML = `<div class="screen"><div style="flex:1"></div><div class="crown-title"><div class="crown">👑</div></div><div class="spinner"></div><p class="center muted">Connexion au salon ${esc(code)}…</p><div style="flex:1"></div></div>`;
+  const s = new RoomSession(code);
+  try {
+    await s.loadHistory();
+  } catch {
+    $('#app').innerHTML = errorScreen('Pas de connexion', "Impossible de joindre le salon. Vérifie ta connexion internet.", code);
+    bindErrorScreen(code);
+    return;
+  }
+  if (!s.meta) {
+    $('#app').innerHTML = errorScreen('Salon introuvable',
+      "Aucun salon ne correspond à ce code. Vérifie le code avec ta copine.<br><br><span class='small'>Les salons sont gardés 12&nbsp;h après leur dernière activité : crée-le le jour de l'élection&nbsp;!</span>", code);
+    bindErrorScreen(code);
+    return;
+  }
+  session = s;
+  rememberRoom(code, s.meta.name);
+  ui.tab = 'cand'; ui.search = ''; ui.sheetCi = null; ui.chatSeen = s.chat.length;
+
+  // Rejoindre / rafraîchir sa présence (les messages expirent au bout de 12 h sur ntfy.sh)
+  const now = Date.now() / 1000;
+  if (s.local.seq === 0 || !s.users[uid]) { s.local.seq += 1; s.users[uid] = { n: pseudo, v: s.local.votes, s: s.local.seq, t: now }; s.pendingUser = true; }
+  else if (s.users[uid].n !== pseudo || now - s.myLastTime > 6 * 3600) { s.touchUser(); }
+  if (s.isHost && now - s.metaLastTime > 6 * 3600) s.pendingMeta = true;
+  s.save();
+  s.flush();
+
+  buildRoomShell();
+  s.onchange = scheduleRender;
+  s.connect();
+  renderRoom();
+  if (joining) toast(`Bienvenue dans « ${s.meta.name} » 💖`);
+}
+
+function errorScreen(title, text, code) {
+  return `<div class="screen"><div style="flex:1"></div>
+    <div class="crown-title"><div class="crown">😢</div><h1 class="serif gold-text" style="font-size:28px">${esc(title)}</h1></div>
+    <p class="center muted">${text}</p>
+    <button class="btn btn-gold" id="retry">Réessayer</button>
+    <button class="btn btn-ghost" id="home">Retour à l'accueil</button>
+    ${myRooms.some(r => r.code === code) ? '<button class="link-btn" id="forget" style="margin:auto">Retirer ce salon de ma liste</button>' : ''}
+    <div style="flex:1"></div></div>`;
+}
+function bindErrorScreen(code) {
+  $('#retry').onclick = () => go('room', { code });
+  $('#home').onclick = () => go('home');
+  const f = $('#forget'); if (f) f.onclick = () => { forgetRoom(code); go('home'); };
+}
+
+function buildRoomShell() {
+  $('#app').innerHTML = `
+  <div class="room">
+    <header class="topbar">
+      <button class="back" id="back" aria-label="Retour">‹</button>
+      <div class="title" id="r-title"></div>
+      <div class="live" id="r-live"><span class="dot"></span><span id="r-live-t"></span></div>
+    </header>
+    <div class="phase" id="r-phase"></div>
+    <main class="main" id="r-main">
+      <section id="tab-cand" class="stack">
+        <div class="card stack" style="gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <b id="cand-progress" style="flex:1;font-size:15px"></b>
+            <button class="toggle" id="hide-elim">Masquer éliminées</button>
+          </div>
+          <div class="progress"><i id="cand-bar"></i></div>
+          <div class="search"><span>🔍</span><input id="search" placeholder="Rechercher une région ou un nom" autocomplete="off"></div>
+        </div>
+        <div id="cand-list" class="stack"></div>
+      </section>
+      <section id="tab-rank" class="stack hidden">
+        <div class="seg" id="rank-scope">
+          <button data-scope="group">Le groupe</button><button data-scope="me">Moi</button>
+        </div>
+        <div id="rank-awards" class="card"></div>
+        <div class="chips" id="rank-chips"></div>
+        <div id="rank-list" class="stack"></div>
+      </section>
+      <section id="tab-chat" class="hidden"><div class="msgs" id="chat-list"></div></section>
+      <section id="tab-room" class="stack hidden"></section>
+    </main>
+    <div class="chatbar hidden" id="chatbar">
+      <div class="reacts">${REACTIONS.map(e => `<button data-react="${e}">${e}</button>`).join('')}</div>
+      <form class="compose" id="compose">
+        <input id="chat-input" maxlength="500" placeholder="Ton commentaire…" autocomplete="off" enterkeyhint="send">
+        <button class="send" type="submit" aria-label="Envoyer">➤</button>
+      </form>
+    </div>
+    <nav class="tabbar" id="tabbar">
+      <button data-tab="cand"><span class="ico">⭐️</span>Candidates</button>
+      <button data-tab="rank"><span class="ico">🏆</span>Classement</button>
+      <button data-tab="chat"><span class="ico">💬</span>Chat<span class="badge hidden" id="chat-badge"></span></button>
+      <button data-tab="room"><span class="ico">👭</span>Salon</button>
+    </nav>
+  </div>`;
+
+  $('#back').onclick = () => go('home');
+  $('#tabbar').addEventListener('click', e => {
+    const b = e.target.closest('[data-tab]'); if (!b) return;
+    ui.tab = b.dataset.tab;
+    $('#r-main').scrollTop = 0;
+    renderRoom();
+    if (ui.tab === 'chat') scrollChatBottom();
+  });
+  $('#search').addEventListener('input', e => { ui.search = e.target.value; renderCandidates(); });
+  $('#hide-elim').onclick = () => { ui.hideElim = !ui.hideElim; renderCandidates(); };
+  $('#cand-list').addEventListener('click', e => {
+    const b = e.target.closest('[data-ci]'); if (b) openRating(+b.dataset.ci);
+  });
+  $('#rank-list').addEventListener('click', e => {
+    const b = e.target.closest('[data-ci]'); if (b) openRating(+b.dataset.ci);
+  });
+  $('#rank-scope').addEventListener('click', e => {
+    const b = e.target.closest('[data-scope]'); if (!b) return;
+    ui.rankScope = b.dataset.scope; renderRanking();
+  });
+  $('#rank-chips').addEventListener('click', e => {
+    const b = e.target.closest('[data-k]'); if (!b) return;
+    ui.rankCrit = +b.dataset.k; renderRanking();
+  });
+  $('#chatbar').addEventListener('click', e => {
+    const b = e.target.closest('[data-react]'); if (b && session) { haptic(); session.sendChat(b.dataset.react); scrollChatBottom(true); }
+  });
+  $('#compose').addEventListener('submit', e => {
+    e.preventDefault();
+    const inp = $('#chat-input');
+    if (session && inp.value.trim()) { session.sendChat(inp.value); inp.value = ''; scrollChatBottom(true); }
+  });
+}
+
+let renderQueued = false;
+function scheduleRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => { renderQueued = false; if (session) renderRoom(); });
+}
+
+function renderRoom() {
+  const s = session; if (!s || !$('#r-main')) return;
+  const ph = phaseOf(s.meta.phase);
+  $('#r-title').textContent = s.meta.name;
+  const live = $('#r-live');
+  live.className = 'live ' + (s.live ? 'on' : 'off');
+  $('#r-live-t').textContent = s.live ? 'EN DIRECT' : 'connexion…';
+  const syncTxt = s.syncError ? '⏳ envoi en attente' : (s.hasPending ? 'envoi…' : '');
+  $('#r-phase').innerHTML = `<span>${ph.e}</span><span>${esc(ph.t)}</span><span class="sync">${syncTxt}</span>`;
+  for (const t of ['cand', 'rank', 'chat', 'room']) {
+    $('#tab-' + t).classList.toggle('hidden', ui.tab !== t);
+    $(`#tabbar [data-tab="${t}"]`).classList.toggle('active', ui.tab === t);
+  }
+  $('#chatbar').classList.toggle('hidden', ui.tab !== 'chat');
+  if (ui.tab === 'chat') ui.chatSeen = s.chat.length;
+  const unread = Math.max(0, s.chat.length - ui.chatSeen);
+  const badge = $('#chat-badge');
+  badge.classList.toggle('hidden', unread === 0);
+  badge.textContent = unread > 99 ? '99+' : unread;
+
+  if (ui.tab === 'cand') renderCandidates();
+  else if (ui.tab === 'rank') renderRanking();
+  else if (ui.tab === 'chat') renderChat();
+  else renderRoomInfo();
+  if (ui.sheetCi !== null) renderRatingBody();
+}
+
+function renderCandidates() {
+  const s = session; if (!s) return;
+  const rated = s.ratedCount(uid);
+  $('#cand-progress').textContent = `Tu as noté ${rated}/${NC} Miss`;
+  $('#cand-bar').style.width = (rated / NC * 100) + '%';
+  $('#hide-elim').classList.toggle('on', ui.hideElim);
+  const q = ui.search.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const norm = x => x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let html = '';
+  for (let ci = 0; ci < NC; ci++) {
+    const c = s.candidate(ci);
+    if (ui.hideElim && c.elim) continue;
+    if (q && !norm(c.title).includes(q) && !norm(c.name).includes(q)) continue;
+    const mine = s.overall(ci, uid), group = s.overall(ci);
+    const dots = CRITERIA.map((cr, k) => `<span class="${s.score(uid, ci, k) ? '' : 'off'}">${cr.e}</span>`).join('');
+    html += `
+      <button class="cand ${c.elim ? 'elim' : ''} ${c.crown ? 'crowned' : ''}" data-ci="${ci}">
+        <span class="num">${c.n}</span>
+        <span class="info">
+          <b>${esc(c.title)} ${c.crown ? '👑' : ''}</b>
+          ${c.name ? `<span class="small muted">${esc(c.name)}</span>` : ''}
+          <div class="crit-dots">${dots}</div>
+        </span>
+        <span class="score">
+          ${mine ? `<div class="big">${fmt(mine.v)}</div><div class="tiny muted">ma note</div>` : '<div class="todo">À noter</div>'}
+          ${group ? `<div class="tiny muted">Groupe ${fmt(group.v)}</div>` : ''}
+        </span>
+      </button>`;
+  }
+  $('#cand-list').innerHTML = html || '<div class="empty">Aucune candidate trouvée.</div>';
+}
+
+function renderRanking() {
+  const s = session; if (!s) return;
+  const only = ui.rankScope === 'me' ? uid : null;
+  $('#rank-scope').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.scope === ui.rankScope));
+  $('#rank-awards').innerHTML = `<div class="section-title" style="margin:0 0 6px">🏆 ${only ? 'Mes prix' : 'Les prix du salon'}</div>` +
+    CRITERIA.map((cr, k) => {
+      const best = s.ranking(k, only)[0];
+      return `<div class="award"><span class="e">${cr.e}</span><span class="grow"><span class="tiny muted">${cr.a}</span><b>${best ? esc(s.candidate(best.ci).title) : '—'}</b></span>${best ? `<span class="val">${fmt(best.v)}</span>` : ''}</div>`;
+    }).join('');
+  $('#rank-chips').innerHTML = [`<button class="chip ${ui.rankCrit === -1 ? 'active' : ''}" data-k="-1">👑 Général</button>`]
+    .concat(CRITERIA.map((cr, k) => `<button class="chip ${ui.rankCrit === k ? 'active' : ''}" data-k="${k}">${cr.e} ${cr.t}</button>`)).join('');
+  const list = s.ranking(ui.rankCrit, only);
+  const medals = ['🥇', '🥈', '🥉'];
+  $('#rank-list').innerHTML = list.length ? list.map((r, i) => {
+    const c = s.candidate(r.ci);
+    return `<button class="rank ${i < 3 ? 'top' : ''} ${c.elim ? 'elim' : ''}" data-ci="${r.ci}">
+      <span class="pos ${i < 3 ? '' : 'n'}">${i < 3 ? medals[i] : i + 1}</span>
+      <span class="grow"><b>${esc(c.title)} ${c.crown ? '👑' : ''}</b>${c.name ? `<span class="small muted">${esc(c.name)}</span>` : ''}<div class="bar"><i style="width:${r.v * 10}%"></i></div></span>
+      <span class="val"><div class="big">${fmt(r.v)}</div>${only ? '' : `<div class="tiny muted">${plural(r.n, 'vote')}</div>`}</span>
+    </button>`;
+  }).join('') : `<div class="empty"><div class="e">🗳️</div>Pas encore de notes. Va dans l'onglet <b>Candidates</b> pour noter tes Miss&nbsp;!</div>`;
+}
+
+const isEmojiOnly = t => t.length <= 12 && /^(\p{Extended_Pictographic}|\p{Emoji_Component}|‍|️|\s)+$/u.test(t) && /\p{Extended_Pictographic}/u.test(t);
+const timeStr = t => { try { return new Date(t * 1000).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }); } catch { return ''; } };
+
+function renderChat() {
+  const s = session; if (!s) return;
+  const main = $('#r-main');
+  const nearBottom = main.scrollHeight - main.scrollTop - main.clientHeight < 80;
+  const item = (m, pending) => {
+    const me = m.u === uid;
+    return `<div class="msg ${me ? 'me' : ''} ${isEmojiOnly(m.x) ? 'emoji' : ''} ${pending ? 'pending' : ''}">
+      ${me ? '' : `<div class="who">${esc(m.n)}</div>`}
+      <div class="txt">${esc(m.x)}</div>
+      <div class="time">${pending ? 'envoi…' : timeStr(m.t)}</div></div>`;
+  };
+  const html = s.chat.map(m => item(m, false)).join('') + s.chatQueue.filter(m => !m.sent).map(m => item({ u: uid, n: pseudo, x: m.x, t: m.t }, true)).join('');
+  $('#chat-list').innerHTML = html || `<div class="empty"><div class="e">🍿</div>Lance la conversation&nbsp;!</div>`;
+  if (nearBottom) scrollChatBottom();
+}
+function scrollChatBottom() { requestAnimationFrame(() => { const m = $('#r-main'); if (m) m.scrollTop = m.scrollHeight; }); }
+
+function shareUrl(code) {
+  const u = new URL(location.href);
+  u.search = '';
+  u.hash = '';
+  if (params.get('server')) u.searchParams.set('server', params.get('server'));
+  u.searchParams.set('code', code);
+  return u.toString();
+}
+
+function renderRoomInfo() {
+  const s = session; if (!s) return;
+  const host = s.isHost;
+  const ph = phaseOf(s.meta.phase);
+  const members = Object.entries(s.users).sort((a, b) => (a[0] === s.meta.h ? -1 : b[0] === s.meta.h ? 1 : a[1].n.localeCompare(b[1].n)));
+  const el = $('#tab-room');
+  const focused = document.activeElement && el.contains(document.activeElement) && document.activeElement.tagName === 'SELECT';
+  if (focused) return; // ne pas fermer la liste déroulante pendant qu'on choisit
+  el.innerHTML = `
+    <div class="card invite">
+      <div class="small muted">Code d'invitation</div>
+      <div class="code gold-text">${esc(s.code)}</div>
+      <div class="row">
+        <button class="btn btn-outline" id="copy">📋 Copier</button>
+        <button class="btn btn-gold" id="share">💌 Inviter</button>
+      </div>
+    </div>
+    ${host ? `
+    <div class="card">
+      <div class="host-tag">Organisatrice</div>
+      <button class="setting" id="rename"><span>✏️ Renommer le salon</span><span class="chev">›</span></button>
+      <label class="setting"><span>📺 Étape de l'émission</span>
+        <select id="phase">${PHASES.map(p => `<option value="${p.k}" ${p.k === ph.k ? 'selected' : ''}>${p.e} ${esc(p.t)}</option>`).join('')}</select>
+      </label>
+      <div class="small muted" style="padding-top:8px">Pour ajouter le nom d'une candidate, l'éliminer ou la couronner : touche-la dans l'onglet Candidates.</div>
+    </div>` : `
+    <div class="card"><div class="setting" style="border:0;padding:0"><span>📺 Étape de l'émission</span><b>${ph.e} ${esc(ph.t)}</b></div></div>`}
+    <div class="card">
+      <div class="section-title" style="margin:0 0 4px">Participantes (${members.length})</div>
+      ${members.map(([u, m]) => `
+        <div class="list-item">
+          <span class="avatar">${esc((m.n[0] || '?').toUpperCase())}</span>
+          <span style="flex:1;min-width:0">
+            <b>${esc(m.n)}</b> ${u === uid ? '<span class="small muted">(moi)</span>' : ''} ${u === s.meta.h ? '👑' : ''}
+            <div class="small muted">${s.ratedCount(u)}/${NC} Miss notées</div>
+          </span>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <button class="setting" id="edit-me"><span>🙋‍♀️ Mon pseudo : <b>${esc(pseudo)}</b></span><span class="chev">›</span></button>
+      <button class="setting danger" id="leave"><span>🚪 Retirer ce salon de ma liste</span></button>
+    </div>
+    <p class="tiny muted center">Les salons restent disponibles 12&nbsp;h après la dernière activité.</p>`;
+
+  $('#copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(s.code); toast('Code copié ✅'); } catch { toast('Code : ' + s.code); }
+  };
+  $('#share').onclick = async () => {
+    const url = shareUrl(s.code);
+    const text = `👑 Rejoins mon salon « ${s.meta.name} » sur Miss Party 2027 pour noter les Miss ensemble ! Code : ${s.code}`;
+    if (navigator.share) { try { await navigator.share({ title: 'Miss Party 2027', text, url }); } catch {} }
+    else { try { await navigator.clipboard.writeText(text + '\n' + url); toast('Invitation copiée ✅'); } catch { toast(url); } }
+  };
+  $('#edit-me').onclick = () => {
+    const v = clampStr(prompt('Ton pseudo', pseudo) || '', 30);
+    if (v && v !== pseudo) { pseudo = v; store.set('mp_pseudo', pseudo); s.touchUser(); s.schedule(1000); }
+  };
+  $('#leave').onclick = () => {
+    if (confirm('Retirer ce salon de ta liste ? Tu pourras le rejoindre à nouveau avec son code.')) { forgetRoom(s.code); go('home'); }
+  };
+  if (host) {
+    $('#rename').onclick = () => {
+      const v = clampStr(prompt('Nom du salon', s.meta.name) || '', 60);
+      if (v) { s.updateMeta({ name: v }); rememberRoom(s.code, v); }
+    };
+    $('#phase').onchange = e => { s.updateMeta({ phase: e.target.value }); e.target.blur(); };
+  }
+}
+
+/* ---------- Feuille de notation ---------- */
+function openRating(ci) {
+  ui.sheetCi = ci;
+  const sh = sheetShell('<div id="rating"></div>');
+  sh.addEventListener('click', e => {
+    const s = session; if (!s) return;
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.score) {
+      const [k, v] = b.dataset.score.split(':').map(Number);
+      const cur = s.score(uid, ui.sheetCi, k);
+      haptic();
+      s.setScore(ui.sheetCi, k, cur === v ? 0 : v);
+    } else if (b.id === 'prev' || b.id === 'next') {
+      const n = ui.sheetCi + (b.id === 'prev' ? -1 : 1);
+      if (n >= 0 && n < NC) { ui.sheetCi = n; renderRatingBody(); sh.scrollTop = 0; }
+    } else if (b.id === 'done') {
+      closeSheet(); s.flush(); renderRoom();
+    } else if (b.id === 'set-name') {
+      const c = s.candidate(ui.sheetCi);
+      const v = prompt(`Prénom et nom de ${c.title}`, c.name);
+      if (v !== null) { const names = Object.assign({}, s.meta.names); const t = clampStr(v, 40); if (t) names[c.n] = t; else delete names[c.n]; s.updateMeta({ names }); }
+    } else if (b.id === 'toggle-elim') {
+      const c = s.candidate(ui.sheetCi);
+      const elim = c.elim ? s.meta.elim.filter(n => n !== c.n) : s.meta.elim.concat(c.n);
+      s.updateMeta({ elim, crown: !c.elim && c.crown ? null : s.meta.crown });
+    } else if (b.id === 'toggle-crown') {
+      const c = s.candidate(ui.sheetCi);
+      if (c.crown) s.updateMeta({ crown: null });
+      else { s.updateMeta({ crown: c.n, elim: s.meta.elim.filter(n => n !== c.n) }); toast(`👑 ${c.title} est Miss France 2027 !`); }
+    }
+  });
+  renderRatingBody();
+}
+
+function renderRatingBody() {
+  const s = session, box = $('#rating');
+  if (!s || !box || ui.sheetCi === null) return;
+  const ci = ui.sheetCi, c = s.candidate(ci);
+  const mine = s.overall(ci, uid);
+  box.innerHTML = `
+    <div class="sheet-nav">
+      <button id="prev" ${ci === 0 ? 'disabled' : ''}>‹ Précédente</button>
+      <button id="done" style="font-weight:800">OK</button>
+      <button id="next" ${ci === NC - 1 ? 'disabled' : ''}>Suivante ›</button>
+    </div>
+    <div class="sheet-head">
+      <span class="pill">N° ${c.n}</span>
+      <h2 class="serif gold-text">${esc(c.title)} ${c.crown ? '👑' : ''}</h2>
+      ${c.name ? `<div class="muted">${esc(c.name)}</div>` : ''}
+      ${c.elim ? '<div class="host-tag" style="margin-top:4px">Éliminée</div>' : ''}
+      ${mine ? `<div style="margin-top:6px;font-weight:700">Ma note générale : ${fmt(mine.v)}/10</div>` : '<div class="small muted" style="margin-top:6px">Note-la de 1 à 10 sur chaque critère</div>'}
+    </div>
+    ${CRITERIA.map((cr, k) => {
+      const my = s.score(uid, ci, k), g = s.average(ci, k);
+      return `<div class="crit-card">
+        <div class="crit-head"><b>${cr.e} ${cr.t}</b>${g ? `<span class="small muted">Groupe : ${fmt(g.v)} (${g.n})</span>` : ''}</div>
+        <div class="scores">${Array.from({ length: 10 }, (_, i) => i + 1).map(v =>
+          `<button data-score="${k}:${v}" class="${my >= v ? 'on' : ''} ${my === v ? 'sel' : ''}">${v}</button>`).join('')}</div>
+      </div>`;
+    }).join('')}
+    ${s.isHost ? `
+      <div class="card stack" style="margin-top:4px">
+        <div class="host-tag">Réservé à l'organisatrice</div>
+        <button class="btn btn-ghost" id="set-name">✏️ ${c.name ? 'Modifier le nom' : 'Ajouter son prénom et nom'}</button>
+        <div class="row">
+          <button class="btn btn-ghost" id="toggle-elim">${c.elim ? '↩️ Repêcher' : '❌ Éliminée'}</button>
+          <button class="btn btn-outline" id="toggle-crown">${c.crown ? 'Retirer 👑' : '👑 Couronner'}</button>
+        </div>
+      </div>` : ''}`;
+}
+
+/* ================== Démarrage ================== */
+document.addEventListener('visibilitychange', () => {
+  if (!session) return;
+  if (document.visibilityState === 'hidden') session.flush();
+  else if (!session.live) session.connect();
+});
+window.addEventListener('pagehide', () => { if (session) session.flush(); });
+
+(function start() {
+  const code = normCode(params.get('code') || '');
+  if (params.get('code')) {
+    const u = new URL(location.href); u.searchParams.delete('code');
+    try { history.replaceState(null, '', u.toString()); } catch {}
+  }
+  const next = () => {
+    if (isValidCode(code) && myRooms.some(r => r.code === code)) go('room', { code });
+    else { go('home'); if (isValidCode(code)) openJoinSheet(code); }
+  };
+  if (!pseudo) renderPseudo(next); else next();
+})();
+</script>
+</body>
+</html>

@@ -1,5 +1,29 @@
 # 👑 Miss Party 2027
 
+## 📱 Version web : gratuite, depuis l'iPhone, sans rien installer
+
+Le dossier [`docs/`](docs) contient une **version web** de l'app, avec les mêmes fonctionnalités
+(salons, code d'invitation, notes tenue / maquillage / danse / discours, classements, chat).
+Elle s'ouvre dans Safari et s'installe sur l'écran d'accueil comme une vraie app.
+
+**Mettre l'app en ligne (une seule fois, depuis l'iPhone)** :
+1. Sur github.com, ouvre ce dépôt > **Settings** > **Pages**.
+2. *Source* : **Deploy from a branch**. *Branch* : `claude/miss-france-ranking-app-27vy7k`, dossier **`/docs`**, puis **Save**.
+3. Une minute plus tard, l'app est en ligne sur **https://colinepsr13.github.io/d-p-t-coline-/**
+
+**L'installer** : ouvre le lien dans Safari > bouton **Partager** ⬆️ > **« Sur l'écran d'accueil »**.
+
+**Inviter les copines** : dans le salon, onglet *Salon* > **Inviter**. Elles reçoivent le lien et le code.
+
+La synchronisation en direct passe par [ntfy.sh](https://ntfy.sh), un service gratuit et sans compte.
+Les salons restent disponibles 12 h après leur dernière activité : crée-le le soir de l'élection.
+Ce service public limite le nombre d'envois par connexion internet ; l'app regroupe les notes et
+réessaie toute seule si besoin (« envoi en attente »).
+
+---
+
+## Version iPhone native (nécessite un Mac)
+
 Application iPhone pour regarder l'élection de **Miss France 2027** entre copines, même à distance,
 et noter ensemble vos Miss préférées.
 
